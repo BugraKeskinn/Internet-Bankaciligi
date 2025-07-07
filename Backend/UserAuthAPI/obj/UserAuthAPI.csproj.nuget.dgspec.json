@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/bugra/Desktop/Staj Projesi/UserAuthAPI/UserAuthAPI.csproj": {}
+    "/Users/bugra/Desktop/Staj Projesi/Backend/UserAuthAPI/UserAuthAPI.csproj": {}
   },
   "projects": {
-    "/Users/bugra/Desktop/Staj Projesi/UserAuthAPI/UserAuthAPI.csproj": {
+    "/Users/bugra/Desktop/Staj Projesi/Backend/UserAuthAPI/UserAuthAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/bugra/Desktop/Staj Projesi/UserAuthAPI/UserAuthAPI.csproj",
+        "projectUniqueName": "/Users/bugra/Desktop/Staj Projesi/Backend/UserAuthAPI/UserAuthAPI.csproj",
         "projectName": "UserAuthAPI",
-        "projectPath": "/Users/bugra/Desktop/Staj Projesi/UserAuthAPI/UserAuthAPI.csproj",
+        "projectPath": "/Users/bugra/Desktop/Staj Projesi/Backend/UserAuthAPI/UserAuthAPI.csproj",
         "packagesPath": "/Users/bugra/.nuget/packages/",
-        "outputPath": "/Users/bugra/Desktop/Staj Projesi/UserAuthAPI/obj/",
+        "outputPath": "/Users/bugra/Desktop/Staj Projesi/Backend/UserAuthAPI/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/bugra/.nuget/NuGet/NuGet.Config"

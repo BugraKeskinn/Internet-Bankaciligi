@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rSHoZKBqxEI=",
+  "dgSpecHash": "nOBi8ZhLS1Y=",
   "success": true,
-  "projectFilePath": "/Users/bugra/Desktop/Staj Projesi/UserAuthAPI/UserAuthAPI.csproj",
+  "projectFilePath": "/Users/bugra/Desktop/Staj Projesi/Backend/UserAuthAPI/UserAuthAPI.csproj",
   "expectedPackageFiles": [
     "/Users/bugra/.nuget/packages/microsoft.aspnetcore.openapi/9.0.6/microsoft.aspnetcore.openapi.9.0.6.nupkg.sha512",
     "/Users/bugra/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
