@@ -62,16 +62,37 @@
       margin-bottom: 18px;
       font-weight: 700;
     }
-    .main-content p {
-      font-size: 1.1rem;
-      color: #4CAF50;
-      max-width: 400px;
+    #kurlar table {
+      margin: 32px auto 0 auto;
+      border-collapse: collapse;
+      font-size: 1.20rem;
+      font-family: inherit;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px #0001;
+      min-width: 330px;
+      max-width: 95vw;
+    }
+    #kurlar th, #kurlar td {
+      padding: 15px 20px;
       text-align: center;
+      font-weight: 600;
+    }
+    #kurlar tr th {
+      background: #f5f6fa;
+      color: #232f3e;
+      font-size: 1.08em;
+    }
+    #kurlar tr.values td {
+      background: #fff;
+      font-weight: 400;
     }
     @media (max-width: 700px) {
       .navbar { flex-direction: column; padding: 18px 5%; }
       .navbar .nav-links { margin-top: 10px; }
       .main-content { margin-top: 60px; }
+      #kurlar table { font-size: 0.93rem; padding: 0 3px; }
+      #kurlar th, #kurlar td { padding: 7px 5px; }
     }
   </style>
 </head>
@@ -87,45 +108,30 @@
     </div>
   </nav>
   <section class="main-content">
-  <h1>Hoş Geldiniz!</h1>
-  <div id="kurlar">
-    <p>Kurlar yükleniyor...</p>
-  </div>
-</section>
+    <h1>Hoş Geldiniz!</h1>
+    <div id="kurlar">Kurlar yükleniyor...</div>
+  </section>
+  <script>
+    const currencies = ["USD", "EUR", "GBP", "CHF", "AUD", "CNY", "CAD", "JPY"];
+    fetch('https://open.er-api.com/v6/latest/TRY')
+      .then(r => r.json())
+      .then(data => {
+        let html = `<table>
+          <tr>`;
+        currencies.forEach(code => {
+          html += `<th>${code}</th>`;
+        });
+        html += `</tr><tr class="values">`;
+        currencies.forEach(code => {
+          html += `<td>${data.rates[code] ? data.rates[code].toFixed(4) : '-'}</td>`;
+        });
+        html += `</tr></table>`;
+        document.getElementById("kurlar").innerHTML = html;
+      })
+      .catch(err => {
+        document.getElementById("kurlar").innerHTML = "<b style='color:red;'>Kurlar alınamadı!</b>";
+        console.error('Fetch Hatası:', err);
+      });
+  </script>
 </body>
-<div id="kurlar"></div>
-<script>
-const currencies = ["USD", "EUR", "GBP", "CHF", "AUD", "CNY", "CAD", "JPY"];
-fetch('https://open.er-api.com/v6/latest/TRY')
-  .then(r => r.json())
-  .then(data => {
-    let html = `
-      <table style="
-        margin: 32px auto 0 auto;
-        border-collapse: collapse;
-        font-size: 1.35rem;
-        font-family: inherit;
-        ">
-        <tr>
-          <th style="padding: 7px 32px 7px 18px; text-align: left;">Döviz</th>
-          <th style="padding: 7px 32px; text-align: right;">1 TL =</th>
-        </tr>
-    `;
-    currencies.forEach(code => {
-      if (data.rates[code]) {
-        html += `
-        <tr>
-          <td style="padding: 6px 32px 6px 18px; font-weight:600; text-align: left;">${code}</td>
-          <td style="padding: 6px 32px; text-align: right;">${data.rates[code].toFixed(4)}</td>
-        </tr>`;
-      }
-    });
-    html += "</table>";
-    document.getElementById("kurlar").innerHTML = html;
-  })
-  .catch(err => {
-    document.getElementById("kurlar").innerHTML = "<b style='color:red;'>Kurlar alınamadı!</b>";
-    console.error('Fetch Hatası:', err);
-  });
-</script>
 </html>
