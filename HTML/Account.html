@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hesaplarım</title>
+    <link rel="stylesheet" href="StyleAccount.css">
+</head>
+<body>
+    <nav class="navbar">
+      <a href="Dashboard.html" class="logo">
+        <img src="../Src/Logo.png" alt="Green Bank Logo">
+        Green Bank
+      </a>
+      <div class="nav-links">
+        <a href="Account.html">Hesaplarım</a>
+        <a href="Register.html">Para Aktar</a>
+        <a href="">Döviz İşlemleri</a>
+        <a href="">Canlı Destek</a>
+        <a href="">Ayarlar</a>
+        <a href="Main.html">Çıkış Yap</a>
+      </div>
+    </nav>
+    <div class="hesaplarim-container">
+      <h2>Hesaplarım</h2>
+      <table id="hesaplar-tablo">
+        <tr>
+          <th>Hesap Numarası</th>
+          <th>Hesap Türü</th>
+          <th>Bakiye</th>
+        </tr>
+        <!-- Hesap satırları JS ile eklenecek -->
+      </table>
+      <button id="hesap-olustur-btn">+ Hesap Oluştur</button>
+      <div id="uyari-mesaj"></div>
+    </div>
+    <script src="accounts.js"></script>
+</body>
+</html>

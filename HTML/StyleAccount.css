@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f6fa;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 10%;
+  background: #2e6b37;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+.logo img {
+  height: 48px;
+  width: auto;
+}
+.nav-links {
+  display: flex;
+  gap: 18px;
+}
+.nav-links a {
+  text-decoration: none;
+  color: #232f3e;
+  padding: 8px 20px;
+  border-radius: 6px;
+  background: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.nav-links a:hover {
+  background: #4CAF50;
+  color: #fff;
+}
+.hesaplarim-container {
+  max-width: 480px;
+  margin: 48px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 32px 30px;
+}
+.hesaplarim-container h2 {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 18px;
+}
+#hesaplar-tablo {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+#hesaplar-tablo th, #hesaplar-tablo td {
+  padding: 12px 8px;
+  text-align: center;
+}
+#hesaplar-tablo th {
+  background: #f6f6f6;
+  font-size: 1.08em;
+  color: #2e6b37;
+}
+#hesaplar-tablo tr:nth-child(even) td {
+  background: #f8fbf8;
+}
+#hesap-olustur-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 7px;
+  border: none;
+  background: #2e6b37;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#hesap-olustur-btn:hover {
+  background: #47b56a;
+}
+#uyari-mesaj {
+  color: #c93434;
+  text-align: center;
+  font-size: 1.07em;
+  margin-top: 10px;
+}
+@media (max-width: 600px) {
+  .hesaplarim-container {
+    max-width: 97vw;
+    padding: 14px 4vw;
+  }
+  .navbar {
+    flex-direction: column;
+    padding: 10px 2vw;
+    gap: 12px;
+  }
+  .nav-links {
+    gap: 7px;
+    font-size: 0.98em;
+  }
+}

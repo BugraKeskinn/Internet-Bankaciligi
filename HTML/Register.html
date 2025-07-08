@@ -43,6 +43,7 @@
       if (response.ok) {
         const result = await response.text();
         alert("✅ " + result);
+        window.location.href = "Dashboard.html";
         form.reset();
       } else {
         const error = await response.text();
