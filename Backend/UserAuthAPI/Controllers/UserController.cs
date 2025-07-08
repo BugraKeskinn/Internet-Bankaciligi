@@ -31,7 +31,7 @@ namespace UserAuthAPI.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(User login)
+        public IActionResult Login(LoginRequest login)
         {
             var user = _context.Users.FirstOrDefault(u =>
                 u.Email == login.Email && u.Password == login.Password);
@@ -41,5 +41,6 @@ namespace UserAuthAPI.Controllers
 
             return Ok($"Hoş geldin, {user.Name}!");
         }
+
     }
 }

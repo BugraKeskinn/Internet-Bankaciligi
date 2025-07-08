@@ -1,22 +1,59 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Giriş Yap</title>
-    <link rel="stylesheet" href="StyleRegister.css">
+  <meta charset="UTF-8">
+  <title>Giriş Yap</title>
+  <link rel="stylesheet" href="StyleRegister.css">
 </head>
 <body>
 
   <div class="form-container">
     <h1>Giriş Yap</h1>
-    <form id="registerForm">
+    <form id="loginForm">
       <input type="email" placeholder="E-posta" name="email" required>
       <input type="password" placeholder="Şifre" name="password" required>
       <button type="submit">Giriş</button>
     </form>
+
+    <p style="margin-top: 10px;">Hesabınız yok mu?
+      <a href="Register.html">Kayıt Ol</a>
+    </p>
   </div>
 
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
 
+      const form = e.target;
+
+      const credentials = {
+        email: form.email.value,
+        password: form.password.value
+      };
+
+      try {
+        const response = await fetch("http://localhost:5148/user/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(credentials)
+        });
+
+        if (response.ok) {
+          const message = await response.text();
+          alert("✅ " + message);
+          
+          window.location.href = "Dashboard.html";
+        } else {
+          const error = await response.text();
+          alert("❌ " + error);
+        }
+      } catch (err) {
+        alert("❌ Sunucuya ulaşılamadı: " + err.message);
+      }
+    });
+  </script>
 
 </body>
 </html>
