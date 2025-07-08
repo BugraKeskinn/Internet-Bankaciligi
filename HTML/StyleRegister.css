@@ -33,7 +33,7 @@ input {
 button {
     width: 100%;
     padding: 12px;
-    background-color: #4CAF50;
+    background-color: #2e6b37;
     color: white;
     border: none;
     cursor: pointer;
@@ -41,5 +41,5 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #2e6b37;
 }

@@ -9,7 +9,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px 10%;
-  background: #4CAF50;
+  background: #2e6b37;
 }
 .logo {
   display: flex;
@@ -43,12 +43,18 @@ body {
 .navbar .nav-links a:hover {
   background: #8a8a8a;
 }
+/* SADECE BURADA BİR TANE VAR */
 .main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 100px;
   color: #232f3e;
+  background: url('../Src/RealCityBanner.png') center center/cover no-repeat;
+  min-height: 800px;         /* Burayı isteğine göre artırıp azaltabilirsin */
+  width: 100%;
+  position: relative;
+  z-index: 1;
 }
 .main-content h1 {
   font-size: 2.2rem;
@@ -108,7 +114,7 @@ body {
 @media (max-width: 700px) {
   .navbar { flex-direction: column; padding: 18px 5%; }
   .navbar .nav-links { margin-top: 10px; }
-  .main-content { margin-top: 60px; }
+  .main-content { margin-top: 60px; min-height: 360px; }
   #kurlar table { font-size: 0.93rem; padding: 0 3px; }
   #kurlar th, #kurlar td { padding: 7px 5px; }
   #banka-bilgi-row {
@@ -251,3 +257,23 @@ body {
     min-width: unset;
   }
 }
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+  color: #232f3e;
+  background: url('../Src/CityBanner.png') center center/cover no-repeat;
+  min-height: 800px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 900px) {
+  .main-content {
+    min-height: 420px;
+    background-position: center top;
+    background-size: cover;
+  }
+}
+
