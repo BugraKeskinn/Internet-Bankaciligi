@@ -33,6 +33,106 @@
       <button id="hesap-olustur-btn">+ Hesap Oluştur</button>
       <div id="uyari-mesaj"></div>
     </div>
-    <script src="accounts.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            window.location.href = "Login.html";
+            return;
+        }
+
+        // --- HESAPLARI ÇEKEN FONKSİYON ---
+        function hesaplariYukle() {
+            fetch(`http://localhost:5148/api/accounts/user/${userId}`)
+                .then(res => res.json())
+                .then(accounts => {
+                    const tablo = document.getElementById('hesaplar-tablo');
+                    tablo.querySelectorAll('tr:not(:first-child)').forEach(tr => tr.remove());
+                    if (accounts.length === 0) {
+                        let tr = document.createElement('tr');
+                        let td = document.createElement('td');
+                        td.colSpan = 3;
+                        td.innerText = "Hesabınız yok.";
+                        tr.appendChild(td);
+                        tablo.appendChild(tr);
+                    } else {
+                        accounts.forEach(acc => {
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                              <td>${acc.accountNumber}</td>
+                              <td>${acc.accountType}</td>
+                              <td>${acc.balance}</td>
+                            `;
+                            tablo.appendChild(tr);
+                        });
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('uyari-mesaj').innerText = "Hesaplar yüklenemedi!";
+                });
+        }
+
+        hesaplariYukle();
+
+        // --- HESAP OLUŞTUR BUTONU ---
+        document.getElementById('hesap-olustur-btn').addEventListener('click', function() {
+            if (document.getElementById('yeni-hesap-tr')) return; // Yenisi zaten varsa ekleme
+
+            const tablo = document.getElementById('hesaplar-tablo');
+            const tr = document.createElement('tr');
+            tr.id = "yeni-hesap-tr";
+            tr.innerHTML = `
+              <td>Otomatik</td>
+              <td>
+                <select id="yeni-hesap-tur">
+                  <option value="TL">TL</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                </select>
+              </td>
+              <td>
+                <input type="number" min="0" id="yeni-hesap-balance" placeholder="Başlangıç Bakiye" style="width:100px;">
+                <button id="hesap-kaydet-btn">Kaydet</button>
+                <button id="hesap-iptal-btn">İptal</button>
+              </td>
+            `;
+            tablo.appendChild(tr);
+
+            // Kaydet tuşu
+            document.getElementById('hesap-kaydet-btn').onclick = async function() {
+                const accountType = document.getElementById('yeni-hesap-tur').value;
+                const balance = document.getElementById('yeni-hesap-balance').value;
+                if (!balance) {
+                    document.getElementById('uyari-mesaj').innerText = "Lütfen bakiye gir!";
+                    return;
+                }
+                const response = await fetch('http://localhost:5148/api/accounts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: parseInt(userId),
+                        accountType: accountType,
+                        balance: parseFloat(balance)
+                    })
+                });
+                if (response.ok) {
+                    document.getElementById('uyari-mesaj').innerText = "✅ Hesap eklendi!";
+                    hesaplariYukle();
+                    tr.remove();
+                } else {
+                    const error = await response.text();
+                    document.getElementById('uyari-mesaj').innerText = "❌ " + error;
+                }
+            };
+
+            // İptal tuşu
+            document.getElementById('hesap-iptal-btn').onclick = function() {
+                tr.remove();
+                document.getElementById('uyari-mesaj').innerText = "";
+            };
+        });
+    });
+    </script>
 </body>
 </html>

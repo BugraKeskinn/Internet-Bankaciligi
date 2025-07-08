@@ -3,108 +3,253 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f5f6fa;
 }
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 10%;
+  padding: 22px 9vw 22px 9vw;
   background: #2e6b37;
+  color: #fff;
 }
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #fff;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  letter-spacing: 1px;
   text-decoration: none;
 }
 .logo img {
-  height: 48px;
-  width: auto;
+  height: 56px;
 }
 .nav-links {
   display: flex;
-  gap: 18px;
+  gap: 17px;
 }
 .nav-links a {
+  color: #fff;
   text-decoration: none;
-  color: #232f3e;
-  padding: 8px 20px;
-  border-radius: 6px;
-  background: #fff;
   font-weight: 500;
-  font-size: 1rem;
-  transition: background 0.2s;
+  padding: 6px 17px;
+  border-radius: 6px;
+  transition: background .2s;
 }
 .nav-links a:hover {
-  background: #4CAF50;
-  color: #fff;
+  background: #388744;
 }
+
 .hesaplarim-container {
-  max-width: 480px;
-  margin: 48px auto;
+  margin: 36px auto 0 auto;
+  max-width: 570px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 16px #0001;
-  padding: 32px 30px;
+  padding: 33px 32px 34px 32px;
+  border-radius: 15px;
+  box-shadow: 0 2px 16px #3d73410d;
 }
-.hesaplarim-container h2 {
+
+h2 {
+  color: #26622f;
+  font-size: 1.5em;
+  margin-bottom: 24px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
   text-align: center;
-  font-size: 1.4rem;
-  margin-bottom: 18px;
 }
+
 #hesaplar-tablo {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
+  font-size: 1.09em;
 }
+
 #hesaplar-tablo th, #hesaplar-tablo td {
-  padding: 12px 8px;
+  padding: 14px 11px;
+  border-bottom: 1px solid #e6e6e6;
   text-align: center;
 }
+
 #hesaplar-tablo th {
-  background: #f6f6f6;
-  font-size: 1.08em;
-  color: #2e6b37;
+  background: #f5f8f7;
+  color: #1f3a1e;
+  font-weight: 600;
+  font-size: 1.06em;
+  letter-spacing: .2px;
 }
-#hesaplar-tablo tr:nth-child(even) td {
-  background: #f8fbf8;
+
+#hesaplar-tablo tr:last-child td {
+  border-bottom: none;
 }
-#hesap-olustur-btn {
-  width: 100%;
-  padding: 12px;
+
+#hesaplar-tablo td input,
+#hesaplar-tablo td select {
+  font-size: 1em;
+  padding: 7px 10px;
+  border: 1px solid #aacbaf;
+  border-radius: 7px;
+  outline: none;
+  margin-right: 6px;
+  background: #f6faf8;
+  transition: border-color .18s;
+}
+
+#hesaplar-tablo td input:focus,
+#hesaplar-tablo td select:focus {
+  border-color: #388744;
+  background: #fff;
+}
+
+#hesaplar-tablo button {
+  font-size: 1em;
+  padding: 7px 16px;
   border-radius: 7px;
   border: none;
-  background: #2e6b37;
+  margin-left: 3px;
+  margin-bottom: 2px;
+  background: #388744;
   color: #fff;
-  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background .2s, color .2s;
+}
+#hesaplar-tablo button#hesap-iptal-btn {
+  background: #e8eaea;
+  color: #333;
+  border: 1px solid #b7bdb7;
+}
+#hesaplar-tablo button#hesap-iptal-btn:hover {
+  background: #d8dad8;
+  color: #0e4e20;
+}
+#hesaplar-tablo button:hover {
+  background: #1f632a;
+}
+
+#hesap-olustur-btn {
+  width: 100%;
+  padding: 17px;
+  font-size: 1.35em;
+  background: #36753c;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 15px;
+  margin-top: 20px;
+  margin-bottom: 7px;
+  box-shadow: 0 2px 10px #3d73410a;
+  cursor: pointer;
+  transition: background .18s;
 }
 #hesap-olustur-btn:hover {
-  background: #47b56a;
+  background: #24551f;
 }
+
 #uyari-mesaj {
-  color: #c93434;
+  color: #bb2115;
+  font-weight: 500;
   text-align: center;
-  font-size: 1.07em;
-  margin-top: 10px;
+  margin-top: 14px;
+  min-height: 21px;
 }
-@media (max-width: 600px) {
+
+/* --- EN KRİTİK KISIM: HESAP EKLEME SATIRINI ORTALAR VE DÜZENLER --- */
+#yeni-hesap-tr td {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 18px 12px;
+  background: #f7fbf8;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+#yeni-hesap-tr td:first-child {
+  min-width: 120px;
+  font-weight: 600;
+  font-size: 1.13em;
+  color: #225428;
+  justify-content: center;
+}
+
+#yeni-hesap-tr select,
+#yeni-hesap-tr input[type="number"] {
+  width: 110px;
+  min-width: 60px;
+  font-size: 1.1em;
+  padding: 9px 13px;
+  border: 1.5px solid #acd5b8;
+  border-radius: 8px;
+  background: #f7faf7;
+}
+
+#yeni-hesap-tr input[type="number"] {
+  text-align: center;
+}
+
+#hesap-kaydet-btn {
+  padding: 11px 27px;
+  margin-right: 6px;
+  margin-left: 6px;
+  font-size: 1.13em;
+  background: #358238;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 2px 8px #206d2b1d;
+  transition: background .14s;
+}
+#hesap-kaydet-btn:hover { background: #24551f; }
+
+#hesap-iptal-btn {
+  padding: 11px 21px;
+  font-size: 1.09em;
+  border-radius: 8px;
+  background: #e8eaea;
+  color: #222;
+  border: 1.5px solid #b7bdb7;
+  font-weight: 600;
+  margin-left: 2px;
+  transition: background .14s, color .14s;
+}
+#hesap-iptal-btn:hover {
+  background: #d8dad8;
+  color: #165426;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
   .hesaplarim-container {
-    max-width: 97vw;
-    padding: 14px 4vw;
+    padding: 18px 6vw;
+    max-width: 99vw;
   }
   .navbar {
     flex-direction: column;
-    padding: 10px 2vw;
+    padding: 20px 2vw;
     gap: 12px;
   }
-  .nav-links {
-    gap: 7px;
+  #hesaplar-tablo th, #hesaplar-tablo td {
     font-size: 0.98em;
+    padding: 10px 2px;
+  }
+  #hesap-olustur-btn {
+    font-size: 1em;
+    padding: 12px;
+  }
+  #yeni-hesap-tr td {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 11px 6px;
+  }
+  #yeni-hesap-tr select,
+  #yeni-hesap-tr input[type="number"],
+  #hesap-kaydet-btn,
+  #hesap-iptal-btn {
+    width: 100%;
+    min-width: unset;
+    margin: 0;
   }
 }
