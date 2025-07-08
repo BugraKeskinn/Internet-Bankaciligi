@@ -83,7 +83,7 @@ namespace UserAuthAPI.Controllers
             return Ok(account);
         }
 
-        // 4) 10 haneli random hesap numarası üreten fonksiyon
+    
         private string GenerateRandomAccountNumber(int length)
         {
             var random = new Random();
