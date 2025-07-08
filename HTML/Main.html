@@ -4,97 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ana Sayfa</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f6fa;
-    }
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 10%;
-      background: #4CAF50;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-decoration: none;
-    }
-    .logo img {
-      height: 70px;
-      width: auto;
-      display: block;
-    }
-    .navbar .nav-links {
-      display: flex;
-      gap: 16px;
-    }
-    .navbar .nav-links a {
-      text-decoration: none;
-      color: #000000;
-      padding: 8px 22px;
-      border-radius: 6px;
-      background: #ffffff;
-      transition: background 0.2s;
-      font-weight: 500;
-      font-size: 1rem;
-    }
-    .navbar .nav-links a:hover {
-      background: #8a8a8a;
-    }
-    .main-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 100px;
-      color: #232f3e;
-    }
-    .main-content h1 {
-      font-size: 2.2rem;
-      margin-bottom: 18px;
-      font-weight: 700;
-    }
-    #kurlar table {
-      margin: 32px auto 0 auto;
-      border-collapse: collapse;
-      font-size: 1.20rem;
-      font-family: inherit;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 16px #0001;
-      min-width: 330px;
-      max-width: 95vw;
-    }
-    #kurlar th, #kurlar td {
-      padding: 15px 20px;
-      text-align: center;
-      font-weight: 600;
-    }
-    #kurlar tr th {
-      background: #f5f6fa;
-      color: #232f3e;
-      font-size: 1.08em;
-    }
-    #kurlar tr.values td {
-      background: #fff;
-      font-weight: 400;
-    }
-    @media (max-width: 700px) {
-      .navbar { flex-direction: column; padding: 18px 5%; }
-      .navbar .nav-links { margin-top: 10px; }
-      .main-content { margin-top: 60px; }
-      #kurlar table { font-size: 0.93rem; padding: 0 3px; }
-      #kurlar th, #kurlar td { padding: 7px 5px; }
-    }
-  </style>
+  <link rel="stylesheet" href="Maincss.css">
 </head>
 <body>
   <nav class="navbar">
@@ -110,7 +20,70 @@
   <section class="main-content">
     <h1>Hoş Geldiniz!</h1>
     <div id="kurlar">Kurlar yükleniyor...</div>
+    <div id="banka-bilgi-row">
+      <img src="../Src/Merkez.png" alt="Green Bank Genel Merkezi">
+      <div class="bilgi-metin">
+        <b>Green Bank Hakkında</b><br><br>
+        Green Bank, sürdürülebilir ve yenilikçi bankacılık anlayışıyla müşterilerine çevre dostu finansal çözümler sunar.<br>
+        Yenilikçi dijital altyapısı ve uzman kadrosuyla hem bireysel hem kurumsal müşterilerin tüm ihtiyaçlarına hızlı, güvenli ve şeffaf hizmet sağlar.<br><br>
+        Doğaya ve geleceğe yatırım yapmanın en güvenli yolu Green Bank’ta!
+      </div>
+    </div>
   </section>
+
+  <footer id="infobar">
+    <div class="infobar-main">
+      <div class="infobar-logo-iletisim">
+        <div class="infobar-logo-row">
+          <img src="../Src/Logo.png" alt="Green Bank Logo">
+          <span class="infobar-bankname">Green Bank</span>
+        </div>
+        <div class="infobar-contact">
+          <span>☎️ 0212 123 45 67</span>
+          <span>✉️ info@greenbank.com.tr</span>
+          <span>📍 Ataşehir, İstanbul</span>
+        </div>
+        <div class="infobar-social">
+          <a href="#"><span>🌐</span></a>
+          <a href="#"><span>📸</span></a>
+          <a href="#"><span>🐦</span></a>
+          <a href="#"><span>💼</span></a>
+        </div>
+      </div>
+      <div class="infobar-links">
+        <div>
+          <b>Hizmetler</b>
+          <ul>
+            <li>Dijital Bankacılık</li>
+            <li>Kredi İşlemleri</li>
+            <li>Bireysel Hesaplar</li>
+            <li>Kurumsal Bankacılık</li>
+          </ul>
+        </div>
+        <div>
+          <b>Yardım</b>
+          <ul>
+            <li>SSS</li>
+            <li>Güvenlik</li>
+            <li>Şube ve ATM’ler</li>
+            <li>İletişim</li>
+          </ul>
+        </div>
+        <div>
+          <b>Kurumsal</b>
+          <ul>
+            <li>Hakkımızda</li>
+            <li>Yatırımcı İlişkileri</li>
+            <li>İnsan Kaynakları</li>
+            <li>Blog</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="infobar-copyright">
+      © 2024 Green Bank. Tüm hakları saklıdır.
+    </div>
+  </footer>
   <script>
     const currencies = ["USD", "EUR", "GBP", "CHF", "AUD", "CNY", "CAD", "JPY"];
     fetch('https://open.er-api.com/v6/latest/TRY')

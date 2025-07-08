@@ -1,0 +1,253 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f6fa;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 10%;
+  background: #4CAF50;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+.logo img {
+  height: 70px;
+  width: auto;
+  display: block;
+}
+.navbar .nav-links {
+  display: flex;
+  gap: 16px;
+}
+.navbar .nav-links a {
+  text-decoration: none;
+  color: #000000;
+  padding: 8px 22px;
+  border-radius: 6px;
+  background: #ffffff;
+  transition: background 0.2s;
+  font-weight: 500;
+  font-size: 1rem;
+}
+.navbar .nav-links a:hover {
+  background: #8a8a8a;
+}
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+  color: #232f3e;
+}
+.main-content h1 {
+  font-size: 2.2rem;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+#kurlar table {
+  margin: 32px auto 0 auto;
+  border-collapse: collapse;
+  font-size: 1.20rem;
+  font-family: inherit;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #0001;
+  min-width: 330px;
+  max-width: 95vw;
+}
+#kurlar th, #kurlar td {
+  padding: 15px 20px;
+  text-align: center;
+  font-weight: 600;
+}
+#kurlar tr th {
+  background: #f5f6fa;
+  color: #232f3e;
+  font-size: 1.08em;
+}
+#kurlar tr.values td {
+  background: #fff;
+  font-weight: 400;
+}
+/* --- Bilgi kutusu ve görsel yan yana --- */
+#banka-bilgi-row {
+  display: flex;
+  align-items: center;
+  max-width: 660px;
+  margin: 36px auto 0 auto;
+  background: #fff;
+  border-radius: 13px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 20px 28px;
+  gap: 32px;
+}
+#banka-bilgi-row img {
+  width: 160px;
+  max-width: 33vw;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px #51d88a14;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+#banka-bilgi-row .bilgi-metin {
+  text-align: left;
+  color: #232f3e;
+  font-size: 1.09rem;
+}
+@media (max-width: 700px) {
+  .navbar { flex-direction: column; padding: 18px 5%; }
+  .navbar .nav-links { margin-top: 10px; }
+  .main-content { margin-top: 60px; }
+  #kurlar table { font-size: 0.93rem; padding: 0 3px; }
+  #kurlar th, #kurlar td { padding: 7px 5px; }
+  #banka-bilgi-row {
+    flex-direction: column;
+    gap: 18px;
+    padding: 14px 7vw;
+  }
+  #banka-bilgi-row img {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  #banka-bilgi-row .bilgi-metin {
+    text-align: center;
+  }
+}
+/* ----------- INFObar footer ------------- */
+#infobar {
+  width: 100%;
+  background: #ededed;
+  color: #232f3e;
+  padding: 32px 0 0 0;
+  font-size: 1.10rem;
+  margin-top: 70px;
+  border-top: 1px solid #dadada;
+}
+.infobar-main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 0 4vw 18px 4vw;
+}
+.infobar-logo-iletisim {
+  min-width: 300px;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: flex-start;
+}
+.infobar-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.infobar-logo-row img {
+  width: 50px;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 2px 8px #0001;
+}
+.infobar-bankname {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #2e6b37;
+  letter-spacing: 1px;
+}
+.infobar-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 1em;
+  color: #232f3e;
+}
+.infobar-social {
+  margin-top: 6px;
+  display: flex;
+  gap: 18px;
+  font-size: 1.25em;
+}
+.infobar-links {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 300px;
+  max-width: 700px;
+}
+.infobar-links > div {
+  min-width: 140px;
+}
+.infobar-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+.infobar-links li {
+  margin-bottom: 5px;
+  color: #555;
+  font-size: 1em;
+  transition: color .2s;
+  cursor: pointer;
+}
+.infobar-links li:hover {
+  color: #4CAF50;
+  text-decoration: underline;
+}
+.infobar-links b {
+  color: #232f3e;
+  font-size: 1.09em;
+}
+.infobar-copyright {
+  text-align: center;
+  color: #888;
+  font-size: 1em;
+  padding: 22px 0 9px 0;
+  border-top: 1px solid #dadada;
+  margin-top: 20px;
+}
+@media (max-width: 1000px) {
+  .infobar-main {
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+  }
+  .infobar-links {
+    width: 100%;
+    max-width: 900px;
+    justify-content: space-around;
+    gap: 10px;
+  }
+  .infobar-logo-iletisim {
+    align-items: center;
+  }
+}
+@media (max-width: 600px) {
+  #infobar {
+    font-size: .98rem;
+    padding: 20px 0 0 0;
+  }
+  .infobar-links {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 17px;
+  }
+  .infobar-links > div {
+    min-width: unset;
+  }
+}
