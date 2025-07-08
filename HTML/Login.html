@@ -41,10 +41,11 @@
         });
 
         if (response.ok) {
-          const message = await response.text();
-          alert("✅ " + message);
-          
+          const result = await response.json();  
+          localStorage.setItem('userId', result.userId);
+          alert("✅ Giriş başarılı!");
           window.location.href = "Dashboard.html";
+          form.reset();
         } else {
           const error = await response.text();
           alert("❌ " + error);
