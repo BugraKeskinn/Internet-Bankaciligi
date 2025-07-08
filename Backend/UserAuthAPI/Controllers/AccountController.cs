@@ -4,14 +4,17 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 
+using UserAuthAPI.Data; 
+using UserAuthAPI.Models; 
+
 namespace UserAuthAPI.Controllers
 {
     [ApiController]
     [Route("api/accounts")]
     public class AccountController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public AccountController(AppDbContext context)
+        private readonly ApplicationDbContext _context;
+        public AccountController(ApplicationDbContext context)
         {
             _context = context;
         }
