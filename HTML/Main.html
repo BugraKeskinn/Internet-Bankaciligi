@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ana Sayfa</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f6fa;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 10%;
+      background: #4CAF50;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-decoration: none;
+    }
+    .logo img {
+      height: 70px;
+      width: auto;
+      display: block;
+    }
+    .navbar .nav-links {
+      display: flex;
+      gap: 16px;
+    }
+    .navbar .nav-links a {
+      text-decoration: none;
+      color: #000000;
+      padding: 8px 22px;
+      border-radius: 6px;
+      background: #ffffff;
+      transition: background 0.2s;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+    .navbar .nav-links a:hover {
+      background: #8a8a8a;
+    }
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 100px;
+      color: #232f3e;
+    }
+    .main-content h1 {
+      font-size: 2.2rem;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+    .main-content p {
+      font-size: 1.1rem;
+      color: #4CAF50;
+      max-width: 400px;
+      text-align: center;
+    }
+    @media (max-width: 700px) {
+      .navbar { flex-direction: column; padding: 18px 5%; }
+      .navbar .nav-links { margin-top: 10px; }
+      .main-content { margin-top: 60px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="#" class="logo">
+      <img src="../Src/Logo.png" alt="Green Bank Logo">
+      Green Bank
+    </a>
+    <div class="nav-links">
+      <a href="Login.html">Giriş Yap</a>
+      <a href="Register.html">Kayıt Ol</a>
+    </div>
+  </nav>
+  <section class="main-content">
+    <h1>Hoş Geldiniz!</h1>
+    <p>Bu sayfa, işletmeniz için modern ve basit bir ana sayfa şablonudur.<br>
+    Giriş yap veya kayıt olabilirsiniz.</p>
+  </section>
+</body>
+<script>
+
+
+</script>
+</html>
