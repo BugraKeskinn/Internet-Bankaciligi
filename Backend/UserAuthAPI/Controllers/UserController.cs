@@ -19,14 +19,15 @@ namespace UserAuthAPI.Controllers
         public IActionResult Register(User user)
         {
             _context.Users.Add(user);
-            _context.SaveChanges(); // Veritabanına yazar
-            return Ok("Kayıt başarılı.");
+            _context.SaveChanges(); 
+
+            return Ok(new { message = "Kayıt başarılı.", userId = user.Id, name = user.Name });
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _context.Users.ToList(); // Veritabanından çek
+            var users = _context.Users.ToList(); 
             return Ok(users);
         }
 
@@ -37,10 +38,11 @@ namespace UserAuthAPI.Controllers
                 u.Email == login.Email && u.Password == login.Password);
 
             if (user == null)
-                return Unauthorized("Email veya şifre hatalı.");
+                return Unauthorized(new { message = "Email veya şifre hatalı." }); 
 
-            return Ok($"Hoş geldin, {user.Name}!");
+            return Ok(new { message = $"Hoş geldin, {user.Name}!", userId = user.Id, name = user.Name });
         }
-
     }
-}
+}    
+
+

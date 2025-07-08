@@ -45,10 +45,10 @@
         localStorage.setItem('userId', result.userId);
         alert("✅ Kayıt başarılı!");
         window.location.href = "Dashboard.html";
-      } else {
+    } else {
         const error = await response.text();
         alert("❌ Hata: " + error);
-      }
+    }
     } catch (err) {
       alert("❌ Sunucuya ulaşılamadı: " + err.message);
     }
