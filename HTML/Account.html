@@ -5,6 +5,15 @@
     <title>Hesaplarım</title>
     <link rel="stylesheet" href="StyleAccount.css">
 </head>
+<style>
+  body {
+        background-image: url('../Src/Background.png');
+        background-repeat: no-repeat;
+        background-size: cover;        
+        background-position: center;    
+        background-attachment: fixed;   
+    }
+</style>
 <body>
     <nav class="navbar">
       <a href="Dashboard.html" class="logo">
@@ -13,7 +22,7 @@
       </a>
       <div class="nav-links">
         <a href="Account.html">Hesaplarım</a>
-        <a href="Register.html">Para Aktar</a>
+        <a href="Transfer.html">Para Aktar</a>
         <a href="">Döviz İşlemleri</a>
         <a href="">Canlı Destek</a>
         <a href="">Ayarlar</a>
@@ -28,7 +37,6 @@
           <th>Hesap Türü</th>
           <th>Bakiye</th>
         </tr>
-        <!-- Hesap satırları JS ile eklenecek -->
       </table>
       <button id="hesap-olustur-btn">+ Hesap Oluştur</button>
       <div id="uyari-mesaj"></div>
@@ -42,7 +50,6 @@
             return;
         }
 
-        // --- HESAPLARI ÇEKEN FONKSİYON ---
         function hesaplariYukle() {
             fetch(`http://localhost:5148/api/accounts/user/${userId}`)
                 .then(res => res.json())
@@ -75,9 +82,8 @@
 
         hesaplariYukle();
 
-        // --- HESAP OLUŞTUR BUTONU ---
         document.getElementById('hesap-olustur-btn').addEventListener('click', function() {
-            if (document.getElementById('yeni-hesap-tr')) return; // Yenisi zaten varsa ekleme
+            if (document.getElementById('yeni-hesap-tr')) return; 
 
             const tablo = document.getElementById('hesaplar-tablo');
             const tr = document.createElement('tr');
@@ -98,8 +104,6 @@
               </td>
             `;
             tablo.appendChild(tr);
-
-            // Kaydet tuşu
             document.getElementById('hesap-kaydet-btn').onclick = async function() {
                 const accountType = document.getElementById('yeni-hesap-tur').value;
                 const balance = document.getElementById('yeni-hesap-balance').value;

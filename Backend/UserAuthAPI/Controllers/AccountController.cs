@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 
-using UserAuthAPI.Data; 
-using UserAuthAPI.Models; 
+using UserAuthAPI.Data;
+using UserAuthAPI.Models;
 
 namespace UserAuthAPI.Controllers
 {
@@ -23,14 +23,12 @@ namespace UserAuthAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountDto dto)
         {
-            // Aynı kullanıcıda aynı hesap türü var mı kontrol et
             var existing = await _context.Accounts
                 .FirstOrDefaultAsync(a => a.UserId == dto.UserId && a.AccountType == dto.AccountType);
 
             if (existing != null)
                 return BadRequest("Bu döviz türünden zaten hesabınız var.");
 
-            // Benzersiz hesap numarası üret
             string accountNumber;
             do
             {
@@ -38,7 +36,6 @@ namespace UserAuthAPI.Controllers
             }
             while (await _context.Accounts.AnyAsync(a => a.AccountNumber == accountNumber));
 
-            // Yeni hesap oluştur
             var account = new Account
             {
                 UserId = dto.UserId,
@@ -59,7 +56,8 @@ namespace UserAuthAPI.Controllers
         {
             var accounts = await _context.Accounts
                 .Where(a => a.UserId == userId)
-                .Select(a => new {
+                .Select(a => new
+                {
                     a.AccountId,
                     a.AccountNumber,
                     a.AccountType,
@@ -83,7 +81,34 @@ namespace UserAuthAPI.Controllers
             return Ok(account);
         }
 
-    
+        // 4) Para transferi yap
+        [HttpPost("transfer")]
+        public async Task<IActionResult> Transfer([FromBody] TransferRequest req)
+        {
+            var sender = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == req.SenderAccountNumber);
+            var receiver = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == req.ReceiverAccountNumber);
+
+            if(sender == receiver) {
+                return BadRequest(new { success = false, message = "Gönderen ve alıcı hesap aynı olamaz." });
+            }
+            if (sender == null || receiver == null)
+                return BadRequest(new { success = false, message = "Hesap bulunamadı." });
+            if (sender.Balance < req.Amount)
+                return BadRequest(new { success = false, message = "Yetersiz bakiye." });
+
+            // *** Hesap tiplerini karşılaştır! ***
+            if (!string.Equals(sender.AccountType, receiver.AccountType, StringComparison.OrdinalIgnoreCase))
+                return BadRequest(new { success = false, message = "Hesap türleri farklı, transfer yapılamaz." });
+
+            sender.Balance -= req.Amount;
+            receiver.Balance += req.Amount;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Transfer başarılı." });
+        }
+
+
+
         private string GenerateRandomAccountNumber(int length)
         {
             var random = new Random();
@@ -94,11 +119,18 @@ namespace UserAuthAPI.Controllers
         }
     }
 
-    // DTO
+    // DTO'lar (Controller'ın DIŞINDA ayrı olarak)
     public class CreateAccountDto
     {
         public int UserId { get; set; }
         public string AccountType { get; set; }
         public decimal Balance { get; set; }
+    }
+
+    public class TransferRequest
+    {
+        public string SenderAccountNumber { get; set; }
+        public string ReceiverAccountNumber { get; set; }
+        public decimal Amount { get; set; }
     }
 }

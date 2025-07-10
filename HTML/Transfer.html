@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Transfer</title>
+  <link rel="stylesheet" href="StyleAccount.css" />
+  <style>
+    body {
+        background-image: url('../Src/Background.png');
+        background-repeat: no-repeat;
+        background-size: cover;        
+        background-position: center;    
+        background-attachment: fixed;   
+    }
+    .form-container {
+      background-color: #fff;
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgb(0 0 0 / 0.08);
+      display: flex;
+      justify-content: center;
+    }
+    form#transferForm {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    form#transferForm label {
+      font-weight: 600;
+      white-space: nowrap;
+      margin-right: 5px;
+    }
+
+    form#transferForm input[type="text"],
+    form#transferForm input[type="number"],
+    form#transferForm select {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      min-width: 150px;
+      margin-right: 15px;
+    }
+
+    form#transferForm button {
+      background-color: #2c5d2b;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+      margin-left: 10px;
+    }
+    form#transferForm button:hover {
+      background-color: #23521e;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="Dashboard.html" class="logo">
+      <img src="../Src/Logo.png" alt="Green Bank Logo" />
+      Green Bank
+    </a>
+    <div class="nav-links">
+      <a href="Account.html">Hesaplarım</a>
+      <a href="Transfer.html">Para Aktar</a>
+      <a href="">Döviz İşlemleri</a>
+      <a href="">Canlı Destek</a>
+      <a href="">Ayarlar</a>
+      <a href="Main.html">Çıkış Yap</a>
+    </div>
+  </nav>
+
+  <div class="form-container">
+    <form id="transferForm">
+      <label for="accountNumber">Hesap Numarası:</label>
+      <input
+        type="text"
+        id="accountNumber"
+        name="accountNumber"
+        placeholder="Hesap Numarası"
+        required
+      />
+      <label for="accountType">Hesap Türü:</label>
+      <select id="accountType" name="accountType" required>
+        <option value="">Lütfen seçiniz</option>
+      </select>
+      <label for="amount">Miktar:</label>
+      <input
+        type="number"
+        id="amount"
+        name="amount"
+        placeholder="Miktar"
+        min="0.01"
+        step="0.01"
+        required
+      />
+      <button type="submit">Gönder</button>
+    </form>
+  </div>
+</body>
+<script>
+    // Kullanıcı kimliği localStorage'dan alınıyor
+    const userId = localStorage.getItem("userId");
+    const senderSelect = document.getElementById('accountType'); // Kendi hesabın select
+
+    // Hesapları çek ve selecte ekle
+    fetch(`http://localhost:5148/api/accounts/user/${userId}`)
+      .then(res => res.json())
+      .then(accounts => {
+          accounts.forEach(acc => {
+              const option = document.createElement('option');
+              option.value = acc.accountNumber; // YALNIZCA accountNumber!
+              option.text = `${acc.accountType} - ${acc.accountNumber}`;
+              senderSelect.appendChild(option);
+          });
+      })
+      .catch(() => {
+          const option = document.createElement('option');
+          option.value = '';
+          option.text = 'Hesaplar yüklenemedi';
+          senderSelect.appendChild(option);
+          senderSelect.disabled = true;
+      });
+
+    // Form submit
+    document.getElementById('transferForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const senderAccountNumber = document.getElementById("accountType").value;
+        const receiverAccountNumber = document.getElementById("accountNumber").value;
+        const amount = document.getElementById("amount").value;
+
+        transfer(senderAccountNumber, receiverAccountNumber, amount);
+    });
+
+    function transfer(senderAccountNumber, receiverAccountNumber, amount) {
+        fetch('http://localhost:5148/api/accounts/transfer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                senderAccountNumber: senderAccountNumber,
+                receiverAccountNumber: receiverAccountNumber,
+                amount: amount
+            })
+        })
+        .then(res => {
+            // Bazı hatalarda response.json() atmaz; önce status'a bakalım
+            if (!res.ok) return res.text().then(msg => { throw new Error(msg); });
+            return res.json();
+        })
+        .then(data => {
+            alert("Transfer başarılı.");
+            document.getElementById("transferForm").reset();
+        })
+        .catch(error => {
+            alert('Transfer hatası: ' + error.message);
+        });
+    }
+</script>
+
+
+            
+</html>
