@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
-
 using UserAuthAPI.Data;
 using UserAuthAPI.Models;
 
@@ -14,12 +13,12 @@ namespace UserAuthAPI.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+
         public AccountController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // 1) Kullanıcıya yeni hesap aç
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountDto dto)
         {
@@ -50,7 +49,6 @@ namespace UserAuthAPI.Controllers
             return Ok(account);
         }
 
-        // 2) Bir kullanıcının tüm hesaplarını getir
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetAccountsByUser(int userId)
         {
@@ -68,7 +66,6 @@ namespace UserAuthAPI.Controllers
             return Ok(accounts);
         }
 
-        // 3) Hesap detayını getir (opsiyonel)
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccount(int accountId)
         {
@@ -81,22 +78,23 @@ namespace UserAuthAPI.Controllers
             return Ok(account);
         }
 
-        // 4) Para transferi yap
         [HttpPost("transfer")]
         public async Task<IActionResult> Transfer([FromBody] TransferRequest req)
         {
             var sender = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == req.SenderAccountNumber);
             var receiver = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == req.ReceiverAccountNumber);
 
-            if(sender == receiver) {
+            if (sender == receiver)
+            {
                 return BadRequest(new { success = false, message = "Gönderen ve alıcı hesap aynı olamaz." });
             }
+            if (req.Amount <= 0)
+                return BadRequest(new { success = false, message = "Transfer tutarı sıfırdan büyük olmalı." });
             if (sender == null || receiver == null)
                 return BadRequest(new { success = false, message = "Hesap bulunamadı." });
             if (sender.Balance < req.Amount)
                 return BadRequest(new { success = false, message = "Yetersiz bakiye." });
 
-            // *** Hesap tiplerini karşılaştır! ***
             if (!string.Equals(sender.AccountType, receiver.AccountType, StringComparison.OrdinalIgnoreCase))
                 return BadRequest(new { success = false, message = "Hesap türleri farklı, transfer yapılamaz." });
 
@@ -107,7 +105,21 @@ namespace UserAuthAPI.Controllers
             return Ok(new { success = true, message = "Transfer başarılı." });
         }
 
+        [HttpPost("changepassword")]
+        public IActionResult ChangePassword([FromBody] ChangePasswordRequest model)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Id == model.UserId);
+            if (user == null)
+                return BadRequest("Kullanıcı bulunamadı!");
 
+            if (user.Password != model.CurrentPassword)
+                return BadRequest("Mevcut şifre yanlış!");
+
+            user.Password = model.NewPassword;
+            _context.SaveChanges();
+
+            return Ok(new { success = true, message = "Şifre değiştirildi" });
+        }
 
         private string GenerateRandomAccountNumber(int length)
         {
@@ -117,9 +129,27 @@ namespace UserAuthAPI.Controllers
                 result += random.Next(0, 10).ToString();
             return result;
         }
-    }
 
-    // DTO'lar (Controller'ın DIŞINDA ayrı olarak)
+        [HttpDelete("{userId}/{accountNumber}")] 
+        public async Task<IActionResult> DeleteAccount(int userId, string accountNumber)
+        {
+            var account = await _context.Accounts
+                .FirstOrDefaultAsync(a => a.UserId == userId && a.AccountNumber == accountNumber);
+
+            if (account == null)
+                return NotFound("Hesap bulunamadı.");
+            if (account.Balance > 0)
+                return BadRequest("Hesapta bakiye bulunuyor, önce bakiyeyi sıfırlayın.");
+
+            _context.Accounts.Remove(account);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Hesap silindi." });
+        }
+    } 
+
+
+    // *** BURADA, controller DIŞINDA, namespace İÇİNDE DTO'lar ***
     public class CreateAccountDto
     {
         public int UserId { get; set; }
@@ -133,4 +163,17 @@ namespace UserAuthAPI.Controllers
         public string ReceiverAccountNumber { get; set; }
         public decimal Amount { get; set; }
     }
-}
+
+    public class ChangePasswordRequest
+    {
+        public int UserId { get; set; }
+        public string CurrentPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
+
+    public class DeleteAccountRequest
+    {
+        public int UserId { get; set; }
+        public string AccountNumber { get; set; }
+    }
+} // --- BU DA namespace'in kapanış parantezi ---

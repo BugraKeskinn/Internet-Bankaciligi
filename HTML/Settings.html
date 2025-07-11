@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hesaplarım</title>
+    <link rel="stylesheet" href="StyleAccount.css">
+    <style>
+    body {
+        background-image: url('../Src/Background.png');
+        background-repeat: no-repeat;
+        background-size: cover;        
+        background-position: center;    
+        background-attachment: fixed;   
+        margin: 0;
+        font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    }
+    .hesaplarim-container {
+        background: #fff;
+        border-radius: 24px;
+        margin: 38px auto 0 auto;
+        padding: 42px 22px 55px 22px;
+        max-width: 520px;
+        min-height: 300px;   
+        box-shadow: 0 6px 42px #0001;
+        text-align: center;
+        transition: min-height 0.5s cubic-bezier(.44,1.32,.53,1.03);
+        overflow: hidden;
+    }
+    .hesaplarim-container.form-acik {
+        min-height: 670px; 
+    }
+    .hesaplarim-container h2 {
+        font-size: 2.2rem;
+        margin-bottom: 40px;
+        font-weight: 800;
+        color: #276c34;
+        letter-spacing: .3px;
+    }
+
+    #hesaplar-tablo {
+        margin: 0 auto 20px auto;
+        border-spacing: 18px 0;
+    }
+    #hesaplar-tablo td {
+        padding: 0 10px;
+    }
+    #hesaplar-tablo button {
+        background: #2e7d44;
+        color: #fff;
+        font-size: 1.12rem;
+        font-weight: 600;
+        padding: 12px 38px;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px #0001;
+        cursor: pointer;
+        transition: background 0.13s, box-shadow 0.17s, transform 0.13s;
+        letter-spacing: 0.03em;
+        margin-bottom: 0;
+        outline: none;
+        position: relative;
+    }
+    #hesaplar-tablo button:hover, #hesaplar-tablo button:focus {
+        background: #206533;
+        box-shadow: 0 4px 18px #2e7d4420;
+        transform: translateY(-2px) scale(1.01);
+    }
+
+    /* Form container */
+    #sifre-form-container {
+        background: #f7faf7cc;
+        border-radius: 20px;
+        box-shadow: 0 4px 32px #0001;
+        padding: 40px 36px 30px 36px;
+        max-width: 350px;
+        margin: 32px auto 0 auto;
+        display: none;
+        animation: acilis .4s cubic-bezier(.23,1.13,.45,1.09);
+        text-align: left;
+    }
+    @keyframes acilis {
+        from { opacity: 0; transform: translateY(40px) scale(.97);}
+        to   { opacity: 1; transform: translateY(0) scale(1);}
+    }
+
+    #sifre-form label {
+        display: block;
+        font-weight: 600;
+        color: #276c34;
+        margin-bottom: 7px;
+        font-size: 1.05rem;
+    }
+    #sifre-form input[type="password"] {
+        width: 100%;
+        padding: 12px 10px;
+        margin-bottom: 18px;
+        border-radius: 10px;
+        border: 1.5px solid #99beac;
+        font-size: 1.12rem;
+        background: #f7faf9;
+        transition: border-color 0.18s;
+        box-sizing: border-box;
+    }
+    #sifre-form input[type="password"]:focus {
+        border-color: #368944;
+        outline: none;
+    }
+
+    #sifre-form button[type="submit"] {
+        width: 100%;
+        padding: 13px 0;
+        font-size: 1.12rem;
+        font-weight: bold;
+        background: #368944;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        box-shadow: 0 2px 10px #36894422;
+        margin-top: 14px;
+        margin-bottom: 3px;
+        letter-spacing: 0.02em;
+    }
+    #sifre-form button[type="submit"]:hover {
+        background: #276c34;
+        transform: scale(1.01);
+    }
+
+    /* Modern Tablo */
+    .modern-tablo {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 7px;
+        margin-top: 18px;
+    }
+    .modern-tablo th, .modern-tablo td {
+        text-align: center;
+        padding: 12px 7px;
+        font-size: 1.13rem;
+    }
+    .modern-tablo th {
+        background: #eefaf2;
+        font-weight: bold;
+        color: #206533;
+    }
+    .modern-tablo tr {
+        background: #f8fff9;
+        border-radius: 12px;
+        box-shadow: 0 2px 9px #99beac18;
+    }
+    .modern-tablo tr td:first-child {
+        width: 38px;
+    }
+    .modern-tablo tr.selected {
+        background: #d8f7df;
+    }
+
+    .sil-buton {
+        margin-top: 15px;
+        background: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 14px 38px;
+        font-size: 1.15rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 2px 10px #dc354528;
+        transition: background 0.18s, transform 0.14s;
+        letter-spacing: .05em;
+    }
+    .sil-buton:disabled {
+        background: #ccc;
+        color: #888;
+        cursor: not-allowed;
+    }
+    .sil-buton:hover:enabled {
+        background: #b32837;
+        transform: scale(1.03);
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+        .hesaplarim-container {
+            max-width: 97vw;
+            padding: 22px 2vw 38px 2vw;
+        }
+        #sifre-form-container {
+            max-width: 99vw;
+            padding: 30px 6vw 18px 6vw;
+        }
+        #hesaplar-tablo {
+            border-spacing: 7px 0;
+        }
+        #hesaplar-tablo button {
+            font-size: 0.96rem;
+            padding: 10px 13px;
+        }
+        .modern-tablo th, .modern-tablo td {
+            padding: 7px 3px;
+            font-size: 0.97rem;
+        }
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+      <a href="Dashboard.html" class="logo">
+        <img src="../Src/Logo.png" alt="Green Bank Logo">
+        Green Bank
+      </a>
+      <div class="nav-links">
+        <a href="Account.html">Hesaplarım</a>
+        <a href="Transfer.html">Para Aktar</a>
+        <a href="">Döviz İşlemleri</a>
+        <a href="">Canlı Destek</a>
+        <a href="Settings.html">Ayarlar</a>
+        <a href="Main.html">Çıkış Yap</a>
+      </div>
+    </nav>
+    <div class="hesaplarim-container">
+      <h2>Hesap Ayarları</h2>
+      <table id="hesaplar-tablo">
+        <tr>
+            <td><button id="sifre-degistirme">Şifre Değiştirme</button></td>
+            <td><button id="hesap-silme">Hesap Silme</button></td>
+        </tr>
+      </table>
+      <div id="sifre-form-container" style="display:none; margin-top:20px;">
+        <form id="sifre-form">
+          <div>
+            <label for="mevcut-sifre">Mevcut Şifre:</label><br>
+            <input type="password" id="mevcut-sifre" name="mevcutSifre" required>
+          </div>
+          <div>
+            <label for="yeni-sifre">Yeni Şifre:</label><br>
+            <input type="password" id="yeni-sifre" name="yeniSifre" required>
+          </div>
+          <div>
+            <label for="yeni-sifre-tekrar">Yeni Şifre (Tekrar):</label><br>
+            <input type="password" id="yeni-sifre-tekrar" name="yeniSifreTekrar" required>
+          </div>
+          <button type="submit">Şifreyi Değiştir</button>
+        </form>
+      </div>
+      <div id="hesap-sil-container" style="display:none; margin-top:20px;">
+        <h3>Hesaplarım</h3>
+        <table id="hesaplar-liste" class="modern-tablo">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Hesap No</th>
+              <th>Tür</th>
+              <th>Bakiye</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        <button id="secili-hesabi-sil" class="sil-buton" disabled>Hesabı Sil</button>
+        <div id="hesap-sil-uyari" style="color: #b33; font-weight: 600; margin-top: 15px;"></div>
+      </div>
+      <div id="uyari-mesaj"></div>
+    </div>
+    <script>
+
+      const userId = localStorage.getItem("userId");
+      const sifreButton = document.getElementById('sifre-degistirme');
+      const sifreFormContainer = document.getElementById('sifre-form-container');
+      const hesapSilButton = document.getElementById('hesap-silme');
+      const hesapSilContainer = document.getElementById('hesap-sil-container');
+      const seciliHesabiSilButton = document.getElementById('secili-hesabi-sil');
+      let seciliHesapNo = null;
+
+      sifreButton.addEventListener('click', function() {
+        sifreFormContainer.style.display = sifreFormContainer.style.display === 'block' ? 'none' : 'block';
+        hesapSilContainer.style.display = 'none';
+      });
+
+      hesapSilButton.addEventListener('click', function() {
+        sifreFormContainer.style.display = 'none';
+        hesapSilContainer.style.display = 'block';
+        hesaplariYukle();
+      });
+      
+      function sifreDegistirme() {
+        const uyari = document.getElementById("uyari-mesaj");
+        uyari.innerText = "";
+
+        const mevcutSifre = document.getElementById("mevcut-sifre").value;
+        const yeniSifre = document.getElementById("yeni-sifre").value;
+        const yeniSifreTekrar = document.getElementById("yeni-sifre-tekrar").value;
+        const userId = localStorage.getItem("userId");
+
+        if (yeniSifre !== yeniSifreTekrar) {
+            uyari.innerText = "Yeni şifreler eşleşmiyor.";
+            uyari.className = "uyari-hata";
+            return;
+        }
+        if (yeniSifre.length < 6) {
+            uyari.innerText = "Yeni şifre en az 6 karakter olmalıdır.";
+            uyari.className = "uyari-hata";
+            return;
+        }
+
+        fetch("http://localhost:5148/api/accounts/changepassword", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: userId,
+                currentPassword: mevcutSifre,
+                newPassword: yeniSifre
+            })
+        })
+        .then(res => {
+            if (res.ok) return res.json();
+            else throw new Error("❌ Şifre değiştirilemedi!");
+        })
+        .then(data => {
+            uyari.innerText = "✅ Şifre başarıyla değiştirildi!";
+            uyari.className = "uyari-bilgi";
+            setTimeout(() => { uyari.innerText = ""; uyari.className = ""; }, 2000);
+            document.getElementById('sifre-form').reset();
+        })
+        .catch(err => {
+            uyari.innerText = err.message || "❌ Sunucu hatası!";
+            uyari.className = "uyari-hata";
+        });
+      }
+
+      document.getElementById('sifre-form').addEventListener('submit', function(e) {
+          e.preventDefault(); 
+          sifreDegistirme();
+      });
+
+      function hesaplariYukle() {
+        const userId = localStorage.getItem("userId");
+        fetch(`http://localhost:5148/api/accounts/user/${userId}`)
+            .then(res => res.json())
+            .then(accounts => {
+                const tabloBody = document.querySelector('#hesaplar-liste tbody');
+                tabloBody.innerHTML = "";
+                seciliHesapNo = null;
+                seciliHesabiSilButton.disabled = true;
+                if (!accounts || accounts.length === 0) {
+                    tabloBody.innerHTML = `<tr><td colspan="4">Hesabınız yok.</td></tr>`;
+                } else {
+                    accounts.forEach((acc, i) => {
+                        let tr = document.createElement('tr');
+                        tr.innerHTML = `
+                          <td>
+                            <input type="radio" name="secili-hesap" value="${acc.accountNumber}" id="hesap-radio-${i}">
+                          </td>
+                          <td>${acc.accountNumber}</td>
+                          <td>${acc.accountType}</td>
+                          <td>${acc.balance}</td>
+                        `;
+                        tabloBody.appendChild(tr);
+                    });
+
+                    document.querySelectorAll('input[name="secili-hesap"]').forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            seciliHesapNo = this.value;
+                            seciliHesabiSilButton.disabled = false;
+                            document.querySelectorAll('#hesaplar-liste tbody tr').forEach(tr => tr.classList.remove('selected'));
+                            this.closest('tr').classList.add('selected');
+                        });
+                    });
+                }
+                document.getElementById('hesap-sil-uyari').innerText = "";
+            })
+            .catch(err => {
+                document.getElementById('hesap-sil-uyari').innerText = "Hesaplar yüklenemedi!";
+            });
+      }
+        seciliHesabiSilButton.addEventListener('click', function() {
+        if (!seciliHesapNo) return;
+        if (!confirm("Seçili hesabı silmek istediğinize emin misiniz?")) return;
+
+        fetch(`http://localhost:5148/api/accounts/${userId}/${seciliHesapNo}`, { 
+            method: "DELETE"
+        })
+        .then(res => {
+            if (res.ok) {
+                document.getElementById('hesap-sil-uyari').style.color = "#276c34";
+                document.getElementById('hesap-sil-uyari').innerText = "✅ Hesap başarıyla silindi!";
+                hesaplariYukle();
+            } else {
+                throw new Error("❌ Hesap Silinemedi Lütfen önce bakiyeyi sıfırlayın!");
+            }
+        })
+        .catch(err => {
+            document.getElementById('hesap-sil-uyari').style.color = "#b33";
+            document.getElementById('hesap-sil-uyari').innerText = err.message || "Sunucu hatası!";
+        });
+    });
+
+
+    </script>
+</body>
+</html>

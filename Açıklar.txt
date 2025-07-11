@@ -1,0 +1,2 @@
+UserId LocalStorage de olduğu için Manipüle edilebiliyor userId ile başka hesaba girmek mümkün.
+Para Transferinde Frontta aldığımız accoundType da manipüle edilip başka hesaptan hesaba transfer mümkün.
