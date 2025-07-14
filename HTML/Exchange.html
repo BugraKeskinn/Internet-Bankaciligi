@@ -164,6 +164,8 @@
             <option value="USD">USD (Amerikan Doları)</option>
             <option value="EUR">EUR (Euro)</option>
           </select>
+          <label for="al-dovizhesap">Döviz Hesabı</label>
+          <select id="al-dovizhesap"></select>
           <label for="al-tlhesap">TL Hesabı</label>
           <select id="al-tlhesap"></select>
           <label for="al-miktar">Miktar (TL)</label>
@@ -192,8 +194,8 @@ const dovizAlBtn = document.getElementById('dovizAlBtn');
 const dovizSatBtn = document.getElementById('dovizSatBtn');
 const dovizAlForm = document.getElementById('dovizAlForm');
 const dovizSatForm = document.getElementById('dovizSatForm');
-
 const alTlhesap = document.getElementById('al-tlhesap');
+const alDovizhesap = document.getElementById('al-dovizhesap');
 const satDovizhesap = document.getElementById('sat-dovizhesap');
 const satTlhesap = document.getElementById('sat-tlhesap');
 const uyari = document.getElementById('uyari-mesaj');
@@ -232,7 +234,38 @@ dovizAlBtn.onclick = function() {
       option.text = 'Hesaplar yüklenemedi';
       alTlhesap.appendChild(option);
     });
+
+  // Varsayılan döviz türüne göre döviz hesabı yükle
+  loadAlDovizHesap();
 };
+
+// Döviz alış türü değişirse döviz hesabı güncelle
+document.getElementById('al-tur').addEventListener('change', loadAlDovizHesap);
+
+function loadAlDovizHesap() {
+  alDovizhesap.innerHTML = '';
+  const selectedTur = document.getElementById('al-tur').value;
+  fetch(`http://localhost:5148/api/accounts/user/${localStorage.getItem("userId")}`)
+    .then(res => res.json())
+    .then(accounts => {
+      let found = false;
+      accounts.forEach(acc => {
+        if (acc.accountType === selectedTur) {
+          found = true;
+          const option = document.createElement('option');
+          option.value = acc.accountNumber;
+          option.text = `${acc.accountType} - ${acc.accountNumber}`;
+          alDovizhesap.appendChild(option);
+        }
+      });
+      if (!found) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.text = `Bu döviz türünde hesabınız yok`;
+        alDovizhesap.appendChild(option);
+      }
+    });
+}
 
 // Döviz Sat butonuna tıklanınca:
 dovizSatBtn.onclick = function() {
@@ -325,45 +358,41 @@ dovizAlForm.onsubmit = function(e) {
 
   const userId = localStorage.getItem("userId");
   const fromAccountNumber = alTlhesap.value;
-  const toCurrency = document.getElementById('al-tur').value;
+  const toAccountNumber = alDovizhesap.value;
   const amount = document.getElementById('al-miktar').value;
 
-  // Kullanıcının o para biriminde hesabını bul
-  fetch(`http://localhost:5148/api/accounts/user/${userId}`)
-    .then(res => res.json())
-    .then(accounts => {
-      const toAccount = accounts.find(a => a.accountType === toCurrency);
-      if (!fromAccountNumber || !toAccount || !amount || amount <= 0) {
-        uyari.innerText = "Tüm alanları doldurun ve bir döviz hesabınız olduğundan emin olun.";
-        return;
-      }
+  if (!fromAccountNumber || !toAccountNumber || !amount || amount <= 0) {
+    uyari.innerText = "Tüm alanları doldurun ve bir döviz hesabınız olduğundan emin olun.";
+    return;
+  }
 
-      fetch("http://localhost:5148/api/accounts/exchange", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: Number(userId),
-          fromAccountNumber: fromAccountNumber,
-          toAccountNumber: toAccount.accountNumber,
-          amount: Number(amount),
-          exchangeType: "buy"
-        })
-      })
-      .then(res => res.json().then(d => ({status: res.status, body: d})))
-      .then(({status, body}) => {
-        if (status === 200) {
-          uyari.style.color = "#276c34";
-          uyari.innerText = "✅ Döviz alım işlemi başarılı!";
-        } else {
-          uyari.style.color = "#b33";
-          uyari.innerText = "❌ " + (body.message || "İşlem başarısız!");
-        }
-      })
-      .catch(() => {
-        uyari.style.color = "#b33";
-        uyari.innerText = "Sunucu hatası!";
-      });
-    });
+  fetch("http://localhost:5148/api/accounts/exchange", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      userId: Number(userId),
+      fromAccountNumber: fromAccountNumber,
+      toAccountNumber: toAccountNumber,
+      amount: Number(amount),
+      exchangeType: "buy"
+    })
+  })
+  .then(res => res.json().then(d => ({status: res.status, body: d})))
+  .then(({status, body}) => {
+    if (status === 200) {
+      uyari.style.color = "#276c34";
+      uyari.innerText = "✅ Döviz alım işlemi başarılı!";
+    } else {
+      uyari.style.color = "#b33";
+      if (body && body.message) uyari.innerText = "❌ " + body.message;
+      else if (typeof body === "string") uyari.innerText = "❌ " + body;
+      else uyari.innerText = "❌ İşlem başarısız!";
+    }
+  })
+  .catch(() => {
+    uyari.style.color = "#b33";
+    uyari.innerText = "Sunucu hatası!";
+  });
 };
 
 // Döviz Satış submit
@@ -372,7 +401,6 @@ dovizSatForm.onsubmit = function(e) {
   uyari.innerText = "";
 
   const userId = localStorage.getItem("userId");
-  const fromCurrency = document.getElementById('sat-tur').value;
   const fromAccountNumber = satDovizhesap.value;
   const toAccountNumber = satTlhesap.value;
   const amount = document.getElementById('sat-miktar').value;
@@ -400,7 +428,9 @@ dovizSatForm.onsubmit = function(e) {
       uyari.innerText = "✅ Döviz satış işlemi başarılı!";
     } else {
       uyari.style.color = "#b33";
-      uyari.innerText = "❌ " + (body.message || "İşlem başarısız!");
+      if (body && body.message) uyari.innerText = "❌ " + body.message;
+      else if (typeof body === "string") uyari.innerText = "❌ " + body;
+      else uyari.innerText = "❌ İşlem başarısız!";
     }
   })
   .catch(() => {
@@ -409,5 +439,6 @@ dovizSatForm.onsubmit = function(e) {
   });
 };
 </script>
+
 </body>
 </html>

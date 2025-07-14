@@ -159,8 +159,7 @@ namespace UserAuthAPI.Controllers
                 return NotFound("Hesap bulunamadı.");
 
             if (fromAccount.Balance < req.Amount)
-                return BadRequest("Yetersiz bakiye.");
-
+                return BadRequest(new { message = "Yetersiz bakiye." });
             if (exchangeType == "buy")
             {
                 if (fromAccount.AccountType.ToUpper() != "TL")
@@ -193,7 +192,7 @@ namespace UserAuthAPI.Controllers
                     return BadRequest("Satış için sadece döviz hesabı kullanılabilir.");
                 if (toAccount.AccountType.ToUpper() != "TL")
                     return BadRequest("Satışta hedef hesap sadece TL olmalı.");
-                    
+
                 switch (fromAccount.AccountType.ToUpper())
                 {
                     case "USD":
