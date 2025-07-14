@@ -130,7 +130,7 @@ namespace UserAuthAPI.Controllers
             return result;
         }
 
-        [HttpDelete("{userId}/{accountNumber}")] 
+        [HttpDelete("{userId}/{accountNumber}")]
         public async Task<IActionResult> DeleteAccount(int userId, string accountNumber)
         {
             var account = await _context.Accounts
@@ -146,10 +146,79 @@ namespace UserAuthAPI.Controllers
 
             return Ok(new { success = true, message = "Hesap silindi." });
         }
-    } 
+        [HttpPost("exchange")]
+        public async Task<IActionResult> Exchange([FromBody] ExchangeRequest req)
+        {
+            var exchangeType = req.ExchangeType.ToLower();
+            var fromAccount = await _context.Accounts
+                .FirstOrDefaultAsync(a => a.AccountNumber == req.FromAccountNumber && a.UserId == req.UserId);
+            var toAccount = await _context.Accounts
+                .FirstOrDefaultAsync(a => a.AccountNumber == req.ToAccountNumber && a.UserId == req.UserId);
+
+            if (fromAccount == null || toAccount == null)
+                return NotFound("Hesap bulunamadı.");
+
+            if (fromAccount.Balance < req.Amount)
+                return BadRequest("Yetersiz bakiye.");
+
+            if (exchangeType == "buy")
+            {
+                if (fromAccount.AccountType.ToUpper() != "TL")
+                    return BadRequest("Alış için sadece TL hesabı kullanılabilir.");
+                if (toAccount.AccountType.ToUpper() == "TL")
+                    return BadRequest("Alış için hedef hesap döviz olmalı (USD/EUR).");
+
+                decimal changedAmount = 0;
+                switch (toAccount.AccountType.ToUpper())
+                {
+                    case "USD":
+                        //Güncel kura göre
+                        fromAccount.Balance -= req.Amount;
+                        changedAmount = req.Amount / 40m;
+                        toAccount.Balance += changedAmount;
+                        break;
+                    case "EUR":
+                        //Güncel kura göre
+                        fromAccount.Balance -= req.Amount;
+                        changedAmount = req.Amount / 45m;
+                        toAccount.Balance += changedAmount;
+                        break;
+                    default:
+                        return BadRequest("Bilinmeyen bir hata oluştu");
+                }
+            }
+            else if (exchangeType == "sell")
+            {
+                if (fromAccount.AccountType.ToUpper() == "TL")
+                    return BadRequest("Satış için sadece döviz hesabı kullanılabilir.");
+                if (toAccount.AccountType.ToUpper() != "TL")
+                    return BadRequest("Satışta hedef hesap sadece TL olmalı.");
+                    
+                switch (fromAccount.AccountType.ToUpper())
+                {
+                    case "USD":
+                        fromAccount.Balance -= req.Amount;
+                        toAccount.Balance += req.Amount * 40m;
+                        break;
+                    case "EUR":
+                        fromAccount.Balance -= req.Amount;
+                        toAccount.Balance += req.Amount * 45m;
+                        break;
+                    default:
+                        return BadRequest("Bilinmeyen bir hata oluştu");
+                }
+            }
+            else
+            {
+                return BadRequest("Bilinmeyen bir hata oluştu");
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Döviz değişimi başarılı." });
+        }
+    }
 
 
-    // *** BURADA, controller DIŞINDA, namespace İÇİNDE DTO'lar ***
     public class CreateAccountDto
     {
         public int UserId { get; set; }
@@ -176,4 +245,12 @@ namespace UserAuthAPI.Controllers
         public int UserId { get; set; }
         public string AccountNumber { get; set; }
     }
-} // --- BU DA namespace'in kapanış parantezi ---
+    public class ExchangeRequest
+    {
+        public int UserId { get; set; }
+        public string FromAccountNumber { get; set; }
+        public string ToAccountNumber { get; set; }
+        public decimal Amount { get; set; }
+        public string ExchangeType { get; set; } 
+    }
+}    

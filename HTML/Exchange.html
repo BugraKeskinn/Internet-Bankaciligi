@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Döviz İşlemleri</title>
+    <link rel="stylesheet" href="StyleAccount.css">
+    <style>
+      body {
+        background-image: url('../Src/Background.png');
+        background-repeat: no-repeat;
+        background-size: cover;        
+        background-position: center;    
+        background-attachment: fixed;   
+        margin: 0;
+        font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+      }
+      .container {
+        background: #fff;
+        border-radius: 24px;
+        margin: 38px auto 0 auto;
+        padding: 42px 22px 55px 22px;
+        max-width: 520px;
+        min-height: 230px;   
+        box-shadow: 0 6px 42px #0001;
+        text-align: center;
+      }
+      .container h2 {
+        font-size: 2.2rem;
+        margin-bottom: 40px;
+        font-weight: 800;
+        color: #276c34;
+        letter-spacing: .3px;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 38px;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+      .action-buttons button {
+        background: #2e7d44;
+        color: #fff;
+        font-size: 1.18rem;
+        font-weight: 600;
+        padding: 18px 52px;
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px #0001;
+        cursor: pointer;
+        transition: background 0.13s, box-shadow 0.17s, transform 0.13s;
+        letter-spacing: 0.04em;
+      }
+      .action-buttons button:hover, .action-buttons button:focus {
+        background: #206533;
+        box-shadow: 0 4px 18px #2e7d4420;
+        transform: translateY(-2px) scale(1.02);
+      }
+      .form-box {
+        background: #f7faf7cc;
+        border-radius: 20px;
+        box-shadow: 0 4px 32px #0001;
+        padding: 36px 30px 30px 30px;
+        max-width: 350px;
+        margin: 0 auto 0 auto;
+        text-align: left;
+        display: none;
+        animation: acilis .4s cubic-bezier(.23,1.13,.45,1.09);
+      }
+      .form-box.active {
+        display: block;
+      }
+      .form-box label {
+        font-weight: 600;
+        color: #276c34;
+        margin-bottom: 7px;
+        font-size: 1.08rem;
+        display: block;
+      }
+      .form-box select, .form-box input[type="number"] {
+        width: 100%;
+        padding: 10px 10px;
+        margin-bottom: 17px;
+        border-radius: 10px;
+        border: 1.5px solid #99beac;
+        font-size: 1.1rem;
+        background: #f7faf9;
+        transition: border-color 0.18s;
+        box-sizing: border-box;
+      }
+      .form-box button[type="submit"] {
+        width: 100%;
+        padding: 13px 0;
+        font-size: 1.11rem;
+        font-weight: bold;
+        background: #368944;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        box-shadow: 0 2px 10px #36894422;
+        margin-top: 7px;
+        letter-spacing: 0.02em;
+      }
+      .form-box button[type="submit"]:hover {
+        background: #276c34;
+        transform: scale(1.01);
+      }
+      #uyari-mesaj {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: 600;
+        color: #b33;
+      }
+      @media (max-width: 700px) {
+        .container {
+            max-width: 97vw;
+            padding: 22px 2vw 38px 2vw;
+        }
+        .action-buttons {
+            flex-direction: column;
+            gap: 18px;
+        }
+        .action-buttons button {
+            width: 100%;
+            padding: 16px 0;
+        }
+        .form-box {
+            max-width: 99vw;
+            padding: 26px 6vw 18px 6vw;
+        }
+      }
+      @keyframes acilis {
+        from { opacity: 0; transform: translateY(40px) scale(.97);}
+        to   { opacity: 1; transform: translateY(0) scale(1);}
+      }
+    </style>
+</head>
+<body>
+  <nav class="navbar">
+      <a href="Dashboard.html" class="logo">
+          <img src="../Src/Logo.png" alt="Green Bank Logo">
+          Green Bank
+      </a>
+      <div class="nav-links">
+          <a href="Account.html">Hesaplarım</a>
+          <a href="Transfer.html">Para Aktar</a>
+          <a href="Exchange.html">Döviz İşlemleri</a>
+          <a href="">Canlı Destek</a>
+          <a href="Settings.html">Ayarlar</a>
+          <a href="Main.html">Çıkış Yap</a>
+      </div>
+  </nav>
+  <div class="container">
+      <h2>Döviz İşlemleri</h2>
+      <div class="action-buttons">
+          <button id="dovizAlBtn">Döviz Al</button>
+          <button id="dovizSatBtn">Döviz Sat</button>
+      </div>
+
+      <form class="form-box" id="dovizAlForm">
+          <label for="al-tur">Alınacak Döviz Türü</label>
+          <select id="al-tur">
+            <option value="USD">USD (Amerikan Doları)</option>
+            <option value="EUR">EUR (Euro)</option>
+          </select>
+          <label for="al-tlhesap">TL Hesabı</label>
+          <select id="al-tlhesap"></select>
+          <label for="al-miktar">Miktar (TL)</label>
+          <input type="number" min="0" id="al-miktar" placeholder="Alınacak tutarı girin">
+          <button type="submit">Satın Al</button>
+      </form>
+
+      <form class="form-box" id="dovizSatForm">
+          <label for="sat-tur">Satılacak Döviz Türü</label>
+          <select id="sat-tur">
+            <option value="USD">USD (Amerikan Doları)</option>
+            <option value="EUR">EUR (Euro)</option>
+          </select>
+          <label for="sat-dovizhesap">Döviz Hesabı</label>
+          <select id="sat-dovizhesap"></select>
+          <label for="sat-tlhesap">TL Hesabı</label>
+          <select id="sat-tlhesap"></select>
+          <label for="sat-miktar">Miktar (Döviz)</label>
+          <input type="number" min="0" id="sat-miktar" placeholder="Satılacak döviz tutarı">
+          <button type="submit">Sat</button>
+      </form>
+      <div id="uyari-mesaj"></div>
+  </div>
+<script>
+const dovizAlBtn = document.getElementById('dovizAlBtn');
+const dovizSatBtn = document.getElementById('dovizSatBtn');
+const dovizAlForm = document.getElementById('dovizAlForm');
+const dovizSatForm = document.getElementById('dovizSatForm');
+
+const alTlhesap = document.getElementById('al-tlhesap');
+const satDovizhesap = document.getElementById('sat-dovizhesap');
+const satTlhesap = document.getElementById('sat-tlhesap');
+const uyari = document.getElementById('uyari-mesaj');
+
+// Döviz Al butonuna tıklanınca:
+dovizAlBtn.onclick = function() {
+  dovizAlForm.classList.add('active');
+  dovizSatForm.classList.remove('active');
+  uyari.innerText = "";
+
+  // TL hesapları yükle
+  alTlhesap.innerHTML = '';
+  fetch(`http://localhost:5148/api/accounts/user/${localStorage.getItem("userId")}`)
+    .then(res => res.json())
+    .then(accounts => {
+      let found = false;
+      accounts.forEach(acc => {
+        if (acc.accountType === 'TL') {
+          found = true;
+          const option = document.createElement('option');
+          option.value = acc.accountNumber;
+          option.text = `TL - ${acc.accountNumber}`;
+          alTlhesap.appendChild(option);
+        }
+      });
+      if (!found) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.text = 'TL hesabınız yok';
+        alTlhesap.appendChild(option);
+      }
+    })
+    .catch(() => {
+      const option = document.createElement('option');
+      option.value = '';
+      option.text = 'Hesaplar yüklenemedi';
+      alTlhesap.appendChild(option);
+    });
+};
+
+// Döviz Sat butonuna tıklanınca:
+dovizSatBtn.onclick = function() {
+  dovizSatForm.classList.add('active');
+  dovizAlForm.classList.remove('active');
+  uyari.innerText = "";
+
+  // Döviz hesapları ve TL hesapları yükle (USD/EUR)
+  satDovizhesap.innerHTML = '';
+  satTlhesap.innerHTML = '';
+  const selectedTur = document.getElementById('sat-tur').value;
+  fetch(`http://localhost:5148/api/accounts/user/${localStorage.getItem("userId")}`)
+    .then(res => res.json())
+    .then(accounts => {
+      let foundDoviz = false, foundTl = false;
+      accounts.forEach(acc => {
+        if (acc.accountType === selectedTur) {
+          foundDoviz = true;
+          const option = document.createElement('option');
+          option.value = acc.accountNumber;
+          option.text = `${acc.accountType} - ${acc.accountNumber}`;
+          satDovizhesap.appendChild(option);
+        }
+        if (acc.accountType === 'TL') {
+          foundTl = true;
+          const option = document.createElement('option');
+          option.value = acc.accountNumber;
+          option.text = `TL - ${acc.accountNumber}`;
+          satTlhesap.appendChild(option);
+        }
+      });
+      if (!foundDoviz) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.text = 'Bu döviz türünde hesabınız yok';
+        satDovizhesap.appendChild(option);
+      }
+      if (!foundTl) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.text = 'TL hesabınız yok';
+        satTlhesap.appendChild(option);
+      }
+    })
+    .catch(() => {
+      const option1 = document.createElement('option');
+      option1.value = '';
+      option1.text = 'Hesaplar yüklenemedi';
+      satDovizhesap.appendChild(option1);
+
+      const option2 = document.createElement('option');
+      option2.value = '';
+      option2.text = 'Hesaplar yüklenemedi';
+      satTlhesap.appendChild(option2);
+    });
+};
+
+// Döviz Satış türü değişirse döviz hesabı filtrele
+document.getElementById('sat-tur').addEventListener('change', function() {
+  satDovizhesap.innerHTML = '';
+  const selectedTur = this.value;
+  fetch(`http://localhost:5148/api/accounts/user/${localStorage.getItem("userId")}`)
+    .then(res => res.json())
+    .then(accounts => {
+      let foundDoviz = false;
+      accounts.forEach(acc => {
+        if (acc.accountType === selectedTur) {
+          foundDoviz = true;
+          const option = document.createElement('option');
+          option.value = acc.accountNumber;
+          option.text = `${acc.accountType} - ${acc.accountNumber}`;
+          satDovizhesap.appendChild(option);
+        }
+      });
+      if (!foundDoviz) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.text = 'Bu döviz türünde hesabınız yok';
+        satDovizhesap.appendChild(option);
+      }
+    });
+});
+
+// --- POST İŞLEMİ ---
+
+// Döviz Alış submit
+dovizAlForm.onsubmit = function(e) {
+  e.preventDefault();
+  uyari.innerText = "";
+
+  const userId = localStorage.getItem("userId");
+  const fromAccountNumber = alTlhesap.value;
+  const toCurrency = document.getElementById('al-tur').value;
+  const amount = document.getElementById('al-miktar').value;
+
+  // Kullanıcının o para biriminde hesabını bul
+  fetch(`http://localhost:5148/api/accounts/user/${userId}`)
+    .then(res => res.json())
+    .then(accounts => {
+      const toAccount = accounts.find(a => a.accountType === toCurrency);
+      if (!fromAccountNumber || !toAccount || !amount || amount <= 0) {
+        uyari.innerText = "Tüm alanları doldurun ve bir döviz hesabınız olduğundan emin olun.";
+        return;
+      }
+
+      fetch("http://localhost:5148/api/accounts/exchange", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: Number(userId),
+          fromAccountNumber: fromAccountNumber,
+          toAccountNumber: toAccount.accountNumber,
+          amount: Number(amount),
+          exchangeType: "buy"
+        })
+      })
+      .then(res => res.json().then(d => ({status: res.status, body: d})))
+      .then(({status, body}) => {
+        if (status === 200) {
+          uyari.style.color = "#276c34";
+          uyari.innerText = "✅ Döviz alım işlemi başarılı!";
+        } else {
+          uyari.style.color = "#b33";
+          uyari.innerText = "❌ " + (body.message || "İşlem başarısız!");
+        }
+      })
+      .catch(() => {
+        uyari.style.color = "#b33";
+        uyari.innerText = "Sunucu hatası!";
+      });
+    });
+};
+
+// Döviz Satış submit
+dovizSatForm.onsubmit = function(e) {
+  e.preventDefault();
+  uyari.innerText = "";
+
+  const userId = localStorage.getItem("userId");
+  const fromCurrency = document.getElementById('sat-tur').value;
+  const fromAccountNumber = satDovizhesap.value;
+  const toAccountNumber = satTlhesap.value;
+  const amount = document.getElementById('sat-miktar').value;
+
+  if (!fromAccountNumber || !toAccountNumber || !amount || amount <= 0) {
+    uyari.innerText = "Tüm alanları doldurun.";
+    return;
+  }
+
+  fetch("http://localhost:5148/api/accounts/exchange", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      userId: Number(userId),
+      fromAccountNumber: fromAccountNumber,
+      toAccountNumber: toAccountNumber,
+      amount: Number(amount),
+      exchangeType: "sell"
+    })
+  })
+  .then(res => res.json().then(d => ({status: res.status, body: d})))
+  .then(({status, body}) => {
+    if (status === 200) {
+      uyari.style.color = "#276c34";
+      uyari.innerText = "✅ Döviz satış işlemi başarılı!";
+    } else {
+      uyari.style.color = "#b33";
+      uyari.innerText = "❌ " + (body.message || "İşlem başarısız!");
+    }
+  })
+  .catch(() => {
+    uyari.style.color = "#b33";
+    uyari.innerText = "Sunucu hatası!";
+  });
+};
+</script>
+</body>
+</html>

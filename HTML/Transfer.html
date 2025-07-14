@@ -78,7 +78,7 @@
     <div class="nav-links">
       <a href="Account.html">Hesaplarım</a>
       <a href="Transfer.html">Para Aktar</a>
-      <a href="">Döviz İşlemleri</a>
+      <a href="Exchange.html">Döviz İşlemleri</a>
       <a href="">Canlı Destek</a>
       <a href="Settings.html">Ayarlar</a>
       <a href="Main.html">Çıkış Yap</a>
@@ -119,7 +119,6 @@
     const senderSelect = document.getElementById('accountType');
     const uyariDiv = document.getElementById('uyari-mesaj');
 
-    // Hesapları çekip selecte ekle
     fetch(`http://localhost:5148/api/accounts/user/${userId}`)
       .then(res => res.json())
       .then(accounts => {

@@ -18,6 +18,10 @@ namespace UserAuthAPI.Controllers
         [HttpPost("register")]
         public IActionResult Register(User user)
         {
+            if (user.Password.Length < 6)
+            {
+                return BadRequest(new { message = "Şifre en az 6 karakter olmalıdır." });
+            }
             _context.Users.Add(user);
             _context.SaveChanges(); 
 
