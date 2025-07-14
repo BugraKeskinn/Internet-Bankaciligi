@@ -406,7 +406,7 @@ dovizSatForm.onsubmit = function(e) {
   const amount = document.getElementById('sat-miktar').value;
 
   if (!fromAccountNumber || !toAccountNumber || !amount || amount <= 0) {
-    uyari.innerText = "Tüm alanları doldurun.";
+    uyari.innerText = "Tüm alanları doldurun ve bir döviz hesabınız olduğundan emin olun.";
     return;
   }
 
