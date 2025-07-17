@@ -5,6 +5,8 @@ using System.Linq;
 using System;
 using UserAuthAPI.Data;
 using UserAuthAPI.Models;
+using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAuthAPI.Controllers
 {
@@ -98,9 +100,24 @@ namespace UserAuthAPI.Controllers
             if (!string.Equals(sender.AccountType, receiver.AccountType, StringComparison.OrdinalIgnoreCase))
                 return BadRequest(new { success = false, message = "Hesap türleri farklı, transfer yapılamaz." });
 
+
             sender.Balance -= req.Amount;
             receiver.Balance += req.Amount;
             await _context.SaveChangesAsync();
+
+            if (req.SaveTransaction)
+            {
+                if (string.IsNullOrWhiteSpace(req.TransactionName))
+                    return BadRequest(new { success = false, message = "Lütfen işlem adı girin." });
+
+                var exists = await _context.SavedTransactions
+                    .AnyAsync(tx => tx.UserId == sender.UserId && tx.TransactionName == req.TransactionName);
+
+                if (exists)
+                    return BadRequest(new { success = false, message = "Bu isimle daha önce bir işlem kaydedilmiş." });
+
+                await SaveTransactionHelper(req, sender.UserId, receiver.AccountNumber, sender.AccountType);
+            }
 
             return Ok(new { success = true, message = "Transfer başarılı." });
         }
@@ -215,6 +232,27 @@ namespace UserAuthAPI.Controllers
 
             return Ok(new { success = true, message = "Döviz değişimi başarılı." });
         }
+        private async Task SaveTransactionHelper(TransferRequest req, int userId, string receiverAccountNumber, string senderAccountType)
+        {
+            var existing = await _context.SavedTransactions
+                .FirstOrDefaultAsync(tx => tx.UserId == userId && tx.TransactionName == req.TransactionName);
+
+            if (existing != null)
+                return; 
+
+            var savedTx = new SavedTransaction
+            {
+                TransactionName = req.TransactionName,
+                UserId = userId,
+                AccountNumber = receiverAccountNumber,
+                AccountType = senderAccountType,
+                Amount = req.Amount
+            };
+
+            _context.SavedTransactions.Add(savedTx);
+            await _context.SaveChangesAsync();
+        }
+
     }
 
 
@@ -230,6 +268,14 @@ namespace UserAuthAPI.Controllers
         public string SenderAccountNumber { get; set; }
         public string ReceiverAccountNumber { get; set; }
         public decimal Amount { get; set; }
+
+        [JsonPropertyName("saveTransaction")]
+        public bool SaveTransaction { get; set; }
+
+
+        [JsonPropertyName("transactionName")]
+        [StringLength(20, ErrorMessage = "İşlem adı 20 karakteri geçemez.")]
+        public string? TransactionName { get; set; }
     }
 
     public class ChangePasswordRequest
