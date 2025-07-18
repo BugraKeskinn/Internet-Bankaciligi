@@ -6,11 +6,11 @@
   <link rel="stylesheet" href="StyleAccount.css" />
   <style>
     body {
-        background-image: url('../Src/Background.png');
-        background-repeat: no-repeat;
-        background-size: cover;        
-        background-position: center;    
-        background-attachment: fixed;   
+      background-image: url('../Src/Background.png');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
     .form-container {
       background-color: #fff;
@@ -87,137 +87,156 @@
 
   <div class="form-container">
     <form id="transferForm">
-      <label for="accountNumber">Hesap Numarası:</label>
-      <input
-        type="text"
-        id="accountNumber"
-        name="accountNumber"
-        placeholder="Hesap Numarası"
-        required
-      />
-      <label for="accountType">Hesap Türü:</label>
-      <select id="accountType" name="accountType" required>
+      <!-- Kayıtlı İşlem Dropdown -->
+      <div class="form-group" style="width: 100%; margin-bottom: 15px;">
+        <label for="savedTransactionSelect"><strong>Kayıtlı İşlem Seç:</strong></label><br><br>
+        <select id="savedTransactionSelect" style="width: 100%; padding: 10px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;">
+          <option value="">-- Bir işlem seçin --</option>
+        </select>
+      </div>
+
+      <label for="accountNumber">Alıcı Hesap No:</label>
+      <input type="text" id="accountNumber" name="accountNumber" placeholder="Alıcı Hesap Numarası" required />
+
+      <label for="senderAccountSelect">Gönderici Hesap:</label>
+      <select id="senderAccountSelect" name="accountType" required>
         <option value="">Lütfen seçiniz</option>
       </select>
-      <label for="amount">Miktar:</label>
-      <input
-        type="number"
-        id="amount"
-        name="amount"
-        placeholder="Miktar"
-        min="0.01"
-        step="0.01"
-        required
-      />
 
-      <!-- Checkbox -->
+      <label for="amount">Miktar:</label>
+      <input type="number" id="amount" name="amount" placeholder="Miktar" min="0.01" step="0.01" required />
+
       <label style="margin-top: 10px;">
         <input type="checkbox" id="saveTransaction" name="saveTransaction" />
         Bu işlemi kayıtlı işlemlerime eklemek istiyorum
       </label>
 
-      <!-- Başta gizli olan işlem adı alanı -->
       <div id="transactionNameContainer" style="display: none; width: 100%; margin-top: 10px;">
-        <label for="transactionName">Kayıtlı İşlem Adı:</label>
-        <br><br>
-        <input
-          type="text"
-          id="transactionName"
-          name="transactionName"
-          placeholder="Örn: Kira Ödemesi"
-          style="padding: 10px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; margin-top: 5px; width: 100%;"
-        />
+        <label for="transactionName">Kayıtlı İşlem Adı:</label><br><br>
+        <input type="text" id="transactionName" name="transactionName" placeholder="Örn: Kira Ödemesi"
+          style="padding: 10px 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; margin-top: 5px; width: 100%;" />
       </div>
 
       <button type="submit">Gönder</button>
     </form>
   </div>
+
   <div id="uyari-mesaj"></div>
 
   <script>
     const userId = localStorage.getItem("userId");
-    const senderSelect = document.getElementById('accountType');
+    const senderSelect = document.getElementById('senderAccountSelect');
     const uyariDiv = document.getElementById('uyari-mesaj');
+    const savedTransactionSelect = document.getElementById("savedTransactionSelect");
 
-    // Kullanıcının hesaplarını yükle
+    // Hesapları yükle
     fetch(`http://localhost:5148/api/accounts/user/${userId}`)
       .then(res => res.json())
       .then(accounts => {
-          accounts.forEach(acc => {
-              const option = document.createElement('option');
-              option.value = acc.accountNumber;
-              option.text = `${acc.accountType} - ${acc.accountNumber}`;
-              senderSelect.appendChild(option);
-          });
+        accounts.forEach(acc => {
+          const option = document.createElement('option');
+          option.value = acc.accountNumber;
+          option.text = `${acc.accountType} - ${acc.accountNumber}`;
+          senderSelect.appendChild(option);
+        });
       })
       .catch(() => {
-          const option = document.createElement('option');
-          option.value = '';
-          option.text = 'Hesaplar yüklenemedi';
-          senderSelect.appendChild(option);
-          senderSelect.disabled = true;
+        const option = document.createElement('option');
+        option.value = '';
+        option.text = 'Hesaplar yüklenemedi';
+        senderSelect.appendChild(option);
+        senderSelect.disabled = true;
       });
 
-    // Form gönderildiğinde
-    document.getElementById('transferForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        uyariDiv.style.display = "none";
-        uyariDiv.innerHTML = "";
-
-        const senderAccountNumber = senderSelect.value;
-        const receiverAccountNumber = document.getElementById("accountNumber").value;
-        const amount = document.getElementById("amount").value;
-        const saveTransaction = document.getElementById("saveTransaction").checked;
-        const transactionName = document.getElementById("transactionName").value;
-
-        // 👇 Eğer kayıtlı işlem işaretliyse ama isim boşsa
-        if (saveTransaction && transactionName.trim() === "") {
-            uyariDiv.style.display = "block";
-            uyariDiv.style.color = "#be2121";
-            uyariDiv.innerHTML = "Lütfen kayıtlı işlem için bir isim girin.";
-            return;
-        }
-
-        // Transfer API isteği
-        fetch('http://localhost:5148/api/accounts/transfer', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                senderAccountNumber: senderAccountNumber,
-                receiverAccountNumber: receiverAccountNumber,
-                amount: parseFloat(amount),
-                saveTransaction: saveTransaction,
-                transactionName: transactionName
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            uyariDiv.style.display = "block";
-            if (data.success) {
-                uyariDiv.style.color = "green";
-                uyariDiv.innerHTML = data.message;
-                document.getElementById("transferForm").reset();
-                document.getElementById("transactionNameContainer").style.display = "none";
-            } else {
-                uyariDiv.style.color = "#be2121";
-                uyariDiv.innerHTML = data.message || "Transfer hatası oluştu.";
-            }
-        })
-        .catch(() => {
-            uyariDiv.style.display = "block";
-            uyariDiv.style.color = "#be2121";
-            uyariDiv.innerHTML = "Transfer sırasında beklenmedik bir hata oluştu.";
+    // Kayıtlı işlemleri yükle
+    async function loadSavedTransactions() {
+      if (!userId) return;
+      try {
+        const res = await fetch(`http://localhost:5148/api/transactions/${userId}`);
+        const data = await res.json();
+        data.forEach(tx => {
+          const option = document.createElement("option");
+          option.value = JSON.stringify(tx);
+          option.textContent = tx.transactionName;
+          savedTransactionSelect.appendChild(option);
         });
+      } catch (err) {
+        console.error("Kayıtlı işlemler yüklenemedi:", err);
+      }
+    }
+
+    // Kayıtlı işlem seçilince alanları doldur
+    savedTransactionSelect.addEventListener("change", function () {
+      const selected = this.value;
+      if (!selected) return;
+      const tx = JSON.parse(selected);
+
+      document.getElementById("accountNumber").value = tx.recieverAccountNumber;
+      document.getElementById("amount").value = tx.amount;
+
+      // senderAccountNumber select'te varsa onu seç
+      for (const option of senderSelect.options) {
+        if (option.value === tx.senderAccountNumber) {
+          senderSelect.value = option.value;
+          break;
+        }
+      }
     });
 
-    // Checkbox seçilirse isim kutusu gösterilsin
+    // Checkbox ile işlem adı göster
     document.getElementById("saveTransaction").addEventListener("change", function () {
-        const container = document.getElementById("transactionNameContainer");
-        container.style.display = this.checked ? "block" : "none";
+      document.getElementById("transactionNameContainer").style.display = this.checked ? "block" : "none";
     });
-</script>
 
+    // Form gönderimi
+    document.getElementById('transferForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      uyariDiv.style.display = "none";
+      uyariDiv.innerHTML = "";
+
+      const senderAccountNumber = senderSelect.value;
+      const receiverAccountNumber = document.getElementById("accountNumber").value;
+      const amount = document.getElementById("amount").value;
+      const saveTransaction = document.getElementById("saveTransaction").checked;
+      const transactionName = document.getElementById("transactionName").value;
+
+      if (saveTransaction && transactionName.trim() === "") {
+        uyariDiv.style.display = "block";
+        uyariDiv.style.color = "#be2121";
+        uyariDiv.innerHTML = "Lütfen kayıtlı işlem için bir isim girin.";
+        return;
+      }
+
+      fetch('http://localhost:5148/api/accounts/transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          senderAccountNumber,
+          receiverAccountNumber,
+          amount: parseFloat(amount),
+          saveTransaction,
+          transactionName
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        uyariDiv.style.display = "block";
+        uyariDiv.style.color = data.success ? "green" : "#be2121";
+        uyariDiv.innerHTML = data.message || "Transfer hatası oluştu.";
+        if (data.success) {
+          document.getElementById("transferForm").reset();
+          document.getElementById("transactionNameContainer").style.display = "none";
+        }
+      })
+      .catch(() => {
+        uyariDiv.style.display = "block";
+        uyariDiv.style.color = "#be2121";
+        uyariDiv.innerHTML = "Transfer sırasında beklenmedik bir hata oluştu.";
+      });
+    });
+
+    // Sayfa yüklenince kayıtlı işlemleri getir
+    window.addEventListener("DOMContentLoaded", loadSavedTransactions);
+  </script>
 </body>
 </html>

@@ -116,7 +116,7 @@ namespace UserAuthAPI.Controllers
                 if (exists)
                     return BadRequest(new { success = false, message = "Bu isimle daha önce bir işlem kaydedilmiş." });
 
-                await SaveTransactionHelper(req, sender.UserId, receiver.AccountNumber, sender.AccountType);
+                await SaveTransactionHelper(req, sender.UserId);
             }
 
             return Ok(new { success = true, message = "Transfer başarılı." });
@@ -232,20 +232,27 @@ namespace UserAuthAPI.Controllers
 
             return Ok(new { success = true, message = "Döviz değişimi başarılı." });
         }
-        private async Task SaveTransactionHelper(TransferRequest req, int userId, string receiverAccountNumber, string senderAccountType)
+        private async Task SaveTransactionHelper(TransferRequest req, int userId)
         {
             var existing = await _context.SavedTransactions
                 .FirstOrDefaultAsync(tx => tx.UserId == userId && tx.TransactionName == req.TransactionName);
 
             if (existing != null)
-                return; 
+                return;
+
+            var senderAccount = await _context.Accounts
+                .FirstOrDefaultAsync(a => a.AccountNumber == req.SenderAccountNumber && a.UserId == userId);
+
+            if (senderAccount == null)
+                return;
 
             var savedTx = new SavedTransaction
             {
                 TransactionName = req.TransactionName,
                 UserId = userId,
-                AccountNumber = receiverAccountNumber,
-                AccountType = senderAccountType,
+                RecieverAccountNumber = req.ReceiverAccountNumber,
+                SenderAccountNumber = req.SenderAccountNumber,
+                AccountType = senderAccount.AccountType,
                 Amount = req.Amount
             };
 
@@ -253,9 +260,24 @@ namespace UserAuthAPI.Controllers
             await _context.SaveChangesAsync();
         }
 
+        [HttpGet("/api/transactions/{userId}")]
+        public async Task<IActionResult> GetSavedTransactions(int userId)
+        {
+            var saved = await _context.SavedTransactions
+                .Where(t => t.UserId == userId)
+                .Select(t => new {
+                    t.TransactionName,
+                    t.RecieverAccountNumber,
+                    t.SenderAccountNumber,
+                    t.AccountType,
+                    t.Amount
+                })
+                .ToListAsync();
+
+            return Ok(saved);
+        }
+
     }
-
-
     public class CreateAccountDto
     {
         public int UserId { get; set; }
